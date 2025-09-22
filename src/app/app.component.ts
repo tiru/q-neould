@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
 
 interface MenuItem {
   label: string;
@@ -12,7 +13,7 @@ interface MenuItem {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ChatBubbleComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   
