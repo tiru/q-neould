@@ -1,0 +1,135 @@
+<div class="predictive-analytics">
+  <div class="predictive-analytics__header">
+    <h2 class="predictive-analytics__title">Predictive Analytics</h2>
+    <div class="predictive-analytics__weather">
+      <span class="predictive-analytics__weather-icon">⛅</span>
+    </div>
+  </div>
+  @if(!loader){
+  <div class="predictive-analytics__content">
+    <div class="predictive-analytics__section">
+      <h3 class="predictive-analytics__section-title">📊 Upcoming Delays</h3>
+      <div class="predictive-analytics__chart-container">
+        <ejs-chart
+          id="delay-prediction-chart"
+          [primaryXAxis]="primaryXAxis"
+          [primaryYAxis]="primaryYAxis"
+          [tooltip]="tooltipSettings"
+          height="160px"
+        >
+          <e-series-collection>
+            <e-series
+              [dataSource]="predictiveAnalyticsData.delayPredictionData"
+              type="Column"
+              xName="time"
+              yName="potential"
+              name="Potential Delays"
+              fill="#6366f1"
+              [marker]="markerSettings"
+            >
+            </e-series>
+          </e-series-collection>
+        </ejs-chart>
+      </div>
+    </div>
+
+    <div class="predictive-analytics__section">
+      <h3 class="predictive-analytics__section-title">Risk Distribution</h3>
+      <div class="predictive-analytics__risk-container">
+        <div class="predictive-analytics__chart-wrapper">
+          <ejs-accumulationchart
+            id="risk-chart"
+            [tooltip]="tooltipSettings"
+            height="120px"
+            width="120px"
+          >
+            <e-accumulation-series-collection>
+              <e-accumulation-series
+                [dataSource]="predictiveAnalyticsData.riskData"
+                xName="category"
+                yName="value"
+                type="Pie"
+                [palettes]="riskColors"
+              >
+              </e-accumulation-series>
+            </e-accumulation-series-collection>
+          </ejs-accumulationchart>
+        </div>
+        <div class="predictive-analytics__risk-legend">
+          <div
+            class="predictive-analytics__legend-item"
+            *ngFor="let item of riskData; let i = index"
+          >
+            <div
+              class="predictive-analytics__legend-color"
+              [style.background-color]="riskColors[i]"
+            ></div>
+            <span class="predictive-analytics__legend-label"
+              >{{ item.category }}</span
+            >
+            <span class="predictive-analytics__legend-value"
+              >{{ item.value }}%</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="predictive-analytics__section">
+      <div class="predictive-analytics__predictions">
+        <div class="predictive-analytics__prediction-card">
+          <div class="predictive-analytics__prediction-label">
+            On-time Performance Prediction
+          </div>
+          <div
+            class="predictive-analytics__prediction-value predictive-analytics__prediction-value--success"
+          >
+            92%
+          </div>
+        </div>
+
+        <div class="predictive-analytics__prediction-card">
+          <div class="predictive-analytics__prediction-label">
+            Potential Cost Savings
+          </div>
+          <div
+            class="predictive-analytics__prediction-value predictive-analytics__prediction-value--currency"
+          >
+            $120K
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="predictive-analytics__section">
+      <h3 class="predictive-analytics__section-title">AI Recommendations</h3>
+      <div class="predictive-analytics__recommendations">
+        <div
+          class="predictive-analytics__recommendation"
+          *ngFor="let rec of predictiveAnalyticsData.recommendations"
+        >
+          <div class="predictive-analytics__recommendation-icon">
+            {{ rec.icon }}
+          </div>
+          <div class="predictive-analytics__recommendation-content">
+            <div class="predictive-analytics__recommendation-title">
+              {{ rec.title }}
+            </div>
+            <div class="predictive-analytics__recommendation-desc">
+              {{ rec.description }}
+            </div>
+          </div>
+          <div
+            class="predictive-analytics__recommendation-priority"
+            [class]="'predictive-analytics__recommendation-priority--' + rec.priority"
+          >
+            {{ rec.priority }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @else{
+  <app-loader></app-loader>
+  }
+</div>

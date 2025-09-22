@@ -1,0 +1,409 @@
+.uld-tracking {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  &__add-btn {
+    width: 32px;
+    height: 32px;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: #4f46e5;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  &__map-section {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__map-container {
+    position: relative;
+    height: 80px;
+  }
+
+  &__map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__route-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(to right, #e5e7eb, #6366f1, #e5e7eb);
+    transform: translateY(-50%);
+    border-radius: 1px;
+  }
+
+  &__aircraft {
+    position: absolute;
+    top: 50%;
+    font-size: 1.25rem;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    transition: left 0.2s ease;
+  }
+
+  &__waypoints {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  &__waypoint {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+
+    &--origin {
+      left: 5%;
+    }
+
+    &--destination {
+      right: 5%;
+    }
+  }
+
+  &__waypoint-dot {
+    width: 8px;
+    height: 8px;
+    background: #6366f1;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #6366f1;
+  }
+
+  &__waypoint-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 0.25rem;
+  }
+
+  &__flight-info {
+    margin-bottom: 1rem;
+  }
+
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+
+    &--active {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+  }
+
+  &__route-info {
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 0.75rem;
+  }
+
+  &__route-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  &__route-details {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__detail-label {
+    font-size: 0.625rem;
+    color: #6b7280;
+  }
+
+  &__detail-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  &__cargo-section,
+  &__alerts-section {
+    margin-bottom: 1rem;
+  }
+
+  &__section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.75rem 0;
+  }
+
+  &__cargo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__cargo-item {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+
+  &__cargo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  &__cargo-id {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__cargo-icon {
+    font-size: 1rem;
+  }
+
+  &__cargo-number {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  &__cargo-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.625rem;
+    font-weight: 500;
+
+    &--in-transit {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    &--loading {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &--delivered {
+      background: #dcfce7;
+      color: #166534;
+    }
+  }
+
+  &__cargo-route {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
+  &__cargo-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    background: #6366f1;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  &__progress-text {
+    font-size: 0.625rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  &__alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+  }
+
+  &__alert-icon {
+    font-size: 1rem;
+    margin-top: 0.125rem;
+  }
+
+  &__alert-content {
+    flex: 1;
+  }
+
+  &__alert-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+  }
+
+  &__alert-message {
+    font-size: 0.625rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+  }
+
+  &__alert-time {
+    font-size: 0.5rem;
+    color: #9ca3af;
+  }
+
+  &__quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  &__action-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--primary {
+      background: #6366f1;
+      color: white;
+      border: none;
+
+      &:hover {
+        background: #4f46e5;
+      }
+    }
+
+    &--secondary {
+      background: #f8fafc;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+
+      &:hover {
+        background: #f1f5f9;
+        color: #374151;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .uld-tracking {
+    padding: 1.5rem;
+
+    &__title {
+      font-size: 1.25rem;
+    }
+
+    &__map-container {
+      height: 100px;
+    }
+
+    &__route-details {
+      gap: 2rem;
+    }
+
+    &__quick-actions {
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    &__action-btn {
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .uld-tracking {
+    &__content {
+      gap: 1.5rem;
+    }
+
+    &__cargo-section,
+    &__alerts-section {
+      margin-bottom: 1.5rem;
+    }
+  }
+}

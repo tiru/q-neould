@@ -1,0 +1,75 @@
+<div class="app content">
+  <!-- Desktop Header -->
+  <header class="header header--desktop">
+    <div class="header__content">
+      <button
+        class="nav-toggle"
+        (click)="toggleNav()"
+        [class.active]="isNavOpen"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <div class="header__brand">
+        <h1 class="header__title">Q-NeoULD</h1>
+        <p class="header__subtitle">Advanced Cargo Management</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Header -->
+  <header class="header header--mobile">
+    <div class="header__content">
+      <button
+        class="nav-toggle nav-toggle--mobile"
+        (click)="toggleNav()"
+        [class.active]="isNavOpen"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <div class="header__brand">
+        <h1 class="header__title">Q-NeoULD</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Overlay -->
+  <div
+    class="nav-overlay"
+    [class.active]="isNavOpen"
+    (click)="closeNav()"
+  ></div>
+
+  <!-- Navigation Menu -->
+  <nav class="nav" [class.open]="isNavOpen">
+    <div class="nav__header">
+      <h2 class="nav__title">Navigation</h2>
+      <button class="nav__close" (click)="closeNav()">&times;</button>
+    </div>
+    <ul class="nav__menu">
+      <li class="nav__item" *ngFor="let item of menuItems">
+        <a
+          class="nav__link"
+          [routerLink]="item.route"
+          [class.active]="currentRoute === item.route"
+          (click)="navigate(item.route)"
+        >
+          <span class="nav__icon">{{ item.icon }}</span>
+          <span class="nav__label">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main" [class.nav-open]="isNavOpen">
+    <router-outlet></router-outlet>
+  </main>
+  <footer class="footer">
+    <div class="footer-content"></div>
+    <div class="footer-bottom">
+      <p class="copyright">
+        © 2025 CargoTrack Pro. Advanced logistics management powered by AI.
+      </p>
+    </div>
+  </footer>
+</div>

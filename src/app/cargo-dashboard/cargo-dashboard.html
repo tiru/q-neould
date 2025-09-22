@@ -1,0 +1,97 @@
+<div class="cargo-dashboard">
+  <main class="cargo-dashboard__main">
+    <div class="cargo-dashboard__stats-overview">
+      <div class="cargo-dashboard__stat-card" (click)="onCardClick('shipments')">
+        @if(!loader){
+        <div class="cargo-dashboard__card-content">
+          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--shipments">
+            📦
+          </div>
+          <div class="cargo-dashboard__stat-value">
+            {{ dashboardData.totalShipments }}
+          </div>
+          <div class="cargo-dashboard__stat-label">Active Shipments</div>
+          <div
+            class="cargo-dashboard__stat-trend"
+            [ngClass]="checkUpTrendClass(dashboardData.totalShipmentUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
+          >
+            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.totalShipmentUpDown) ? '↗️' : '↘️' }}</span>
+            {{dashboardData.totalShipmentUpDown}}
+          </div>
+        </div>
+        } @else {
+        <app-loader></app-loader>
+        }
+      </div>
+
+      <div class="cargo-dashboard__stat-card" (click)="onCardClick('performance')">
+        @if(!loader){
+        <div class="cargo-dashboard__card-content">
+          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--performance">
+            ⏱️
+          </div>
+          <div class="cargo-dashboard__stat-value">
+            {{ dashboardData.onTimePerformance }}%
+          </div>
+          <div class="cargo-dashboard__stat-label">On-Time Performance</div>
+          <div
+            class="cargo-dashboard__stat-trend"
+            [ngClass]="checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
+          >
+            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? '↗️' : '↘️' }}</span>
+            {{dashboardData.onTimePerformanceUpDown}}
+          </div>
+        </div>
+        }@else {
+        <app-loader></app-loader>
+        }
+      </div>
+
+      <div class="cargo-dashboard__stat-card" (click)="onCardClick('revenue')">
+        @if(!loader){
+        <div class="cargo-dashboard__card-content">
+          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--revenue">
+            💰
+          </div>
+          <div class="cargo-dashboard__stat-value">
+            ${{ dashboardData.revenue }}M
+          </div>
+          <div class="cargo-dashboard__stat-label">Monthly Revenue</div>
+          <div
+            class="cargo-dashboard__stat-trend"
+            [ngClass]="checkUpTrendClass(dashboardData.revenueUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
+          >
+            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.revenueUpDown) ? '↗️' : '↘️' }}</span>
+            {{dashboardData.revenueUpDown}}
+          </div>
+        </div>
+        }@else {
+        <app-loader></app-loader>
+        }
+      </div>
+
+      <div class="cargo-dashboard__stat-card" (click)="onCardClick('alerts')">
+        @if(!loader){
+        <div class="cargo-dashboard__card-content">
+          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--alerts">
+            🚨
+          </div>
+          <div class="cargo-dashboard__stat-value">
+            {{ dashboardData.activeAlerts }}
+          </div>
+          <div class="cargo-dashboard__stat-label">Active Alerts</div>
+          <div
+            class="cargo-dashboard__stat-trend"
+            [ngClass]="checkUpTrendClass(dashboardData.activeAlertsUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
+          >
+            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.activeAlertsUpDown) ? '↗️' : '↘️' }}</span>
+            {{dashboardData.activeAlertsUpDown}}
+          </div>
+        </div>
+        }@else {
+        <app-loader></app-loader>
+        }
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,183 @@
+<div class="uld-tracking">
+  <!-- Flight Route Selector -->
+  <div class="uld-tracking__header">
+    <h2>ULD Tracking System</h2>
+    <div class="uld-tracking__route-selector">
+      <button 
+        *ngFor="let route of flightRoutes"
+        [class]="'uld-tracking__route-btn ' + (selectedRoute?.id === route.id ? 'uld-tracking__route-btn--active' : '')"
+        (click)="selectRoute(route)">
+        {{ route.flightNumber }} - {{ route.aircraft }}
+        <span class="uld-tracking__status" [style.background-color]="getStatusColor(route.status)">
+          {{ route.status | titlecase }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Tracking Map -->
+  <div class="uld-tracking__map-container" *ngIf="selectedRoute">
+    <div class="uld-tracking__map">
+      <!-- Flight Path Line -->
+      <svg class="uld-tracking__flight-path" viewBox="0 0 100 100">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+          </marker>
+        </defs>
+        <line 
+          [attr.x1]="selectedRoute.points[0].coordinates.x" 
+          [attr.y1]="selectedRoute.points[0].coordinates.y"
+          [attr.x2]="selectedRoute.points[1].coordinates.x" 
+          [attr.y2]="selectedRoute.points[1].coordinates.y"
+          stroke="#3b82f6" 
+          stroke-width="0.5" 
+          stroke-dasharray="2,1"
+          marker-end="url(#arrowhead)" />
+      </svg>
+
+      <!-- Source Point -->
+      <div 
+        class="uld-tracking__point uld-tracking__point--source"
+        [style.left.%]="selectedRoute.points[0].coordinates.x"
+        [style.top.%]="selectedRoute.points[0].coordinates.y"
+        (click)="selectPoint(selectedRoute.points[0])">
+        <div class="uld-tracking__point-icon">✈️</div>
+        <div class="uld-tracking__point-label">
+          {{ selectedRoute.points[0].code }}
+          <div class="uld-tracking__uld-count">
+            {{ selectedRoute.points[0].ulds.length }} ULDs
+          </div>
+        </div>
+      </div>
+
+      <!-- Destination Point -->
+      <div 
+        class="uld-tracking__point uld-tracking__point--destination"
+        [style.left.%]="selectedRoute.points[1].coordinates.x"
+        [style.top.%]="selectedRoute.points[1].coordinates.y"
+        (click)="selectPoint(selectedRoute.points[1])">
+        <div class="uld-tracking__point-icon">🏢</div>
+        <div class="uld-tracking__point-label">
+          {{ selectedRoute.points[1].code }}
+          <div class="uld-tracking__uld-count">
+            {{ selectedRoute.points[1].ulds.length }} ULDs
+          </div>
+        </div>
+      </div>
+
+      <!-- Aircraft Position -->
+      <div 
+        class="uld-tracking__aircraft"
+        [style.left.%]="selectedRoute.currentPosition.x"
+        [style.top.%]="selectedRoute.currentPosition.y">
+        <div class="uld-tracking__aircraft-icon">✈️</div>
+        <div class="uld-tracking__aircraft-info">
+          {{ selectedRoute.flightNumber }}
+          <div class="uld-tracking__progress">{{ selectedRoute.progress.toFixed(0) }}%</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="uld-tracking__progress-bar">
+        <div class="uld-tracking__progress-fill" [style.width.%]="selectedRoute.progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Point Details Panel -->
+  <div class="uld-tracking__details-panel" *ngIf="selectedPoint" [class.uld-tracking__details-panel--open]="selectedPoint">
+    <div class="uld-tracking__details-header">
+      <h3>{{ selectedPoint.name }} ({{ selectedPoint.code }})</h3>
+      <button class="uld-tracking__close-btn" (click)="closePointDetails()">✕</button>
+    </div>
+    
+    <div class="uld-tracking__details-content">
+      <div class="uld-tracking__time-info">
+        <div class="uld-tracking__time-item">
+          <span class="uld-tracking__time-label">Estimated:</span>
+          <span class="uld-tracking__time-value">{{ selectedPoint.estimatedTime }}</span>
+        </div>
+        <div class="uld-tracking__time-item" *ngIf="selectedPoint.actualTime">
+          <span class="uld-tracking__time-label">Actual:</span>
+          <span class="uld-tracking__time-value">{{ selectedPoint.actualTime }}</span>
+        </div>
+      </div>
+
+      <div class="uld-tracking__ulds-list">
+        <h4>ULD Details ({{ selectedPoint.ulds.length }} units)</h4>
+        <div class="uld-tracking__uld-grid">
+          <div 
+            *ngFor="let uld of selectedPoint.ulds" 
+            class="uld-tracking__uld-card"
+            (click)="selectULD(uld)"
+            [class.uld-tracking__uld-card--hazmat]="uld.hazmat">
+            <div class="uld-tracking__uld-header">
+              <span class="uld-tracking__uld-icon">{{ getULDTypeIcon(uld.type) }}</span>
+              <span class="uld-tracking__uld-id">{{ uld.id }}</span>
+              <span class="uld-tracking__uld-status" [style.background-color]="getStatusColor(uld.status)">
+                {{ uld.status }}
+              </span>
+            </div>
+            <div class="uld-tracking__uld-info">
+              <div class="uld-tracking__uld-weight">{{ uld.weight }}kg / {{ uld.capacity }}kg</div>
+              <div class="uld-tracking__uld-capacity">
+                <div class="uld-tracking__capacity-bar">
+                  <div class="uld-tracking__capacity-fill" [style.width.%]="getCapacityPercentage(uld)"></div>
+                </div>
+                <span class="uld-tracking__capacity-text">{{ getCapacityPercentage(uld).toFixed(0) }}%</span>
+              </div>
+              <div class="uld-tracking__uld-temp" *ngIf="uld.temperature">
+                🌡️ {{ uld.temperature }}°C
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULD Details Modal -->
+  <div class="uld-tracking__modal" *ngIf="selectedULD" (click)="closeULDDetails()">
+    <div class="uld-tracking__modal-content" (click)="$event.stopPropagation()">
+      <div class="uld-tracking__modal-header">
+        <h3>{{ selectedULD.id }} Details</h3>
+        <button class="uld-tracking__close-btn" (click)="closeULDDetails()">✕</button>
+      </div>
+      <div class="uld-tracking__modal-body">
+        <div class="uld-tracking__uld-details">
+          <div class="uld-tracking__detail-row">
+            <span class="uld-tracking__detail-label">Type:</span>
+            <span class="uld-tracking__detail-value">{{ selectedULD.type }}</span>
+          </div>
+          <div class="uld-tracking__detail-row">
+            <span class="uld-tracking__detail-label">Status:</span>
+            <span class="uld-tracking__detail-value uld-tracking__status-badge" [style.background-color]="getStatusColor(selectedULD.status)">
+              {{ selectedULD.status | titlecase }}
+            </span>
+          </div>
+          <div class="uld-tracking__detail-row">
+            <span class="uld-tracking__detail-label">Weight:</span>
+            <span class="uld-tracking__detail-value">{{ selectedULD.weight }}kg / {{ selectedULD.capacity }}kg</span>
+          </div>
+          <div class="uld-tracking__detail-row" *ngIf="selectedULD.temperature">
+            <span class="uld-tracking__detail-label">Temperature:</span>
+            <span class="uld-tracking__detail-value">{{ selectedULD.temperature }}°C</span>
+          </div>
+          <div class="uld-tracking__detail-row">
+            <span class="uld-tracking__detail-label">Hazmat:</span>
+            <span class="uld-tracking__detail-value">{{ selectedULD.hazmat ? '⚠️ Yes' : '✅ No' }}</span>
+          </div>
+          <div class="uld-tracking__detail-row">
+            <span class="uld-tracking__detail-label">Contents:</span>
+            <div class="uld-tracking__contents-list">
+              <span *ngFor="let item of selectedULD.contents" class="uld-tracking__content-item">
+                {{ item }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
