@@ -11,14 +11,14 @@ import {
 
 @Component({
   selector: 'app-uld-forecast-chart',
-  templateUrl: './uld-forecast-chart.component.html',
   standalone: true,
   imports: [CommonModule, ChartModule],
   providers: [LineSeriesService, DateTimeService, TooltipService],
+  templateUrl: './uld-forecast-chart.component.html',
   styleUrls: ['./uld-forecast-chart.component.scss'],
 })
 export class UldForecastChartComponent implements OnInit {
-  @Input() chartData: any[] = [];
+  public chartData: any[] = [];
   public selectedPoint: any = null;
   public isMobile = false;
   public isTablet = false;
@@ -27,40 +27,78 @@ export class UldForecastChartComponent implements OnInit {
 
   public primaryXAxis: Object = {
     valueType: 'DateTime',
-    title: 'Departure Date',
-    labelFormat: 'dd/MM',
-    intervalType: 'Days',
-    labelStyle: { size: '12px' },
-    titleStyle: { size: '14px' },
+    title: '',
+    labelFormat: 'HH:mm',
+    intervalType: 'Hours',
+    interval: 4,
+    labelStyle: {
+      size: '11px',
+      color: '#666666',
+      fontFamily: 'Arial, sans-serif',
+    },
+    lineStyle: { width: 1, color: '#e0e0e0' },
+    majorGridLines: {
+      width: 1,
+      color: '#f0f0f0',
+      dashArray: '0',
+    },
+    majorTickLines: { width: 0 },
+    minorTickLines: { width: 0 },
   };
 
   public primaryYAxis: Object = {
-    title: 'ULD Count',
+    title: '',
     minimum: 0,
-    interval: 1,
-    labelStyle: { size: '12px' },
-    titleStyle: { size: '14px' },
+    maximum: 60,
+    interval: 20,
+    labelStyle: {
+      size: '11px',
+      color: '#666666',
+      fontFamily: 'Arial, sans-serif',
+    },
+    lineStyle: { width: 1, color: '#e0e0e0' },
+    majorGridLines: {
+      width: 1,
+      color: '#f0f0f0',
+      dashArray: '0',
+    },
+    majorTickLines: { width: 0 },
+    minorTickLines: { width: 0 },
   };
 
   public marker: MarkerSettingsModel = {
     visible: true,
-    width: 8,
-    height: 8,
-    fill: '#007bff',
-    border: { width: 2, color: '#ffffff' },
+    width: 6,
+    height: 6,
+    fill: '#4CAF50',
+    border: { width: 0 },
   };
 
   public tooltip: Object = {
     enable: true,
-    format: 'Date: ${point.x}<br/>ULD Count: ${point.y}<br/>Click for details',
-    textStyle: { size: '12px' },
+    format: 'Time: ${point.x}<br/>ULD Count: ${point.y}<br/>Click for details',
+    textStyle: {
+      size: '11px',
+      fontFamily: 'Arial, sans-serif',
+    },
+    fill: 'rgba(0, 0, 0, 0.8)',
+    border: { width: 0 },
   };
 
   public chartMargin: Object = {
-    left: 10,
-    right: 10,
-    top: 10,
-    bottom: 10,
+    left: 40,
+    right: 20,
+    top: 20,
+    bottom: 40,
+  };
+
+  public chartArea: Object = {
+    border: { width: 0 },
+    background: '#ffffff',
+  };
+
+  public chartBorder: Object = {
+    width: 0,
   };
 
   public uldTypes = [
@@ -95,33 +133,41 @@ export class UldForecastChartComponent implements OnInit {
 
   private updateChartDimensions(): void {
     if (this.isMobile) {
-      this.chartHeight = '300px';
-      this.marker = { ...this.marker, width: 6, height: 6 };
+      this.chartHeight = '280px';
+      this.marker = { ...this.marker, width: 5, height: 5 };
       this.primaryXAxis = {
         ...this.primaryXAxis,
-        labelStyle: { size: '10px' },
-        titleStyle: { size: '12px' },
+        labelStyle: {
+          size: '10px',
+          color: '#666666',
+          fontFamily: 'Arial, sans-serif',
+        },
       };
       this.primaryYAxis = {
         ...this.primaryYAxis,
-        labelStyle: { size: '10px' },
-        titleStyle: { size: '12px' },
+        labelStyle: {
+          size: '10px',
+          color: '#666666',
+          fontFamily: 'Arial, sans-serif',
+        },
       };
     } else if (this.isTablet) {
-      this.chartHeight = '350px';
-      this.marker = { ...this.marker, width: 7, height: 7 };
+      this.chartHeight = '320px';
+      this.marker = { ...this.marker, width: 6, height: 6 };
     } else {
-      this.chartHeight = '400px';
-      this.marker = { ...this.marker, width: 8, height: 8 };
+      this.chartHeight = '360px';
+      this.marker = { ...this.marker, width: 6, height: 6 };
     }
   }
 
   private loadChartData(): void {
-    // Sample data based on your CSV structure
+    // Sample data with hourly time intervals to match the attached chart
+    const baseDate = new Date('2025-08-01');
+
     this.chartData = [
       {
-        depDate: new Date('2025-08-01'),
-        uldCount: 12,
+        depTime: new Date(baseDate.getTime() + 0 * 60 * 60 * 1000), // 00:00
+        uldCount: 45,
         orig: 'DOH',
         dest: 'AMS',
         carEqpTyp: '35Q',
@@ -140,28 +186,28 @@ export class UldForecastChartComponent implements OnInit {
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-02'),
-        uldCount: 3,
+        depTime: new Date(baseDate.getTime() + 4 * 60 * 60 * 1000), // 04:00
+        uldCount: 52,
         orig: 'DOH',
         dest: 'HYD',
         carEqpTyp: '35Q',
         cgoCtgry: 'FREIGHT',
-        pcs: 80,
+        pcs: 380,
         wt: 5175.84,
         vol: 33.38,
-        pmc: 2,
-        qke: 0,
-        blk: 0,
+        pmc: 12,
+        qke: 3,
+        blk: 2,
         pla: 1,
-        pkc: 0,
+        pkc: 1,
         alf: 0,
         ake: 0,
         paj: 0,
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-03'),
-        uldCount: 3,
+        depTime: new Date(baseDate.getTime() + 8 * 60 * 60 * 1000), // 08:00
+        uldCount: 38,
         orig: 'DOH',
         dest: 'LHR',
         carEqpTyp: '35Q',
@@ -169,19 +215,19 @@ export class UldForecastChartComponent implements OnInit {
         pcs: 404,
         wt: 2830.2,
         vol: 16.94,
-        pmc: 2,
-        qke: 0,
+        pmc: 7,
+        qke: 1,
         blk: 0,
-        pla: 1,
+        pla: 2,
         pkc: 0,
-        alf: 0,
+        alf: 1,
         ake: 0,
         paj: 0,
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-04'),
-        uldCount: 15,
+        depTime: new Date(baseDate.getTime() + 12 * 60 * 60 * 1000), // 12:00
+        uldCount: 42,
         orig: 'DOH',
         dest: 'FRA',
         carEqpTyp: '77D',
@@ -189,19 +235,19 @@ export class UldForecastChartComponent implements OnInit {
         pcs: 520,
         wt: 8750.3,
         vol: 45.2,
-        pmc: 6,
-        qke: 3,
-        blk: 2,
-        pla: 2,
-        pkc: 1,
-        alf: 1,
-        ake: 0,
+        pmc: 9,
+        qke: 2,
+        blk: 1,
+        pla: 3,
+        pkc: 0,
+        alf: 0,
+        ake: 1,
         paj: 0,
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-05'),
-        uldCount: 8,
+        depTime: new Date(baseDate.getTime() + 16 * 60 * 60 * 1000), // 16:00
+        uldCount: 35,
         orig: 'DOH',
         dest: 'CDG',
         carEqpTyp: '35Q',
@@ -209,13 +255,53 @@ export class UldForecastChartComponent implements OnInit {
         pcs: 280,
         wt: 6420.8,
         vol: 38.7,
-        pmc: 4,
+        pmc: 6,
         qke: 1,
+        blk: 0,
+        pla: 2,
+        pkc: 1,
+        alf: 0,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depTime: new Date(baseDate.getTime() + 20 * 60 * 60 * 1000), // 20:00
+        uldCount: 40,
+        orig: 'DOH',
+        dest: 'JFK',
+        carEqpTyp: '35Q',
+        cgoCtgry: 'FREIGHT',
+        pcs: 450,
+        wt: 7890.5,
+        vol: 42.1,
+        pmc: 8,
+        qke: 2,
         blk: 1,
         pla: 2,
         pkc: 0,
-        alf: 0,
+        alf: 1,
         ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depTime: new Date(baseDate.getTime() + 24 * 60 * 60 * 1000), // 24:00 (next day 00:00)
+        uldCount: 48,
+        orig: 'DOH',
+        dest: 'NRT',
+        carEqpTyp: '77D',
+        cgoCtgry: 'FREIGHT',
+        pcs: 380,
+        wt: 9200.3,
+        vol: 51.2,
+        pmc: 10,
+        qke: 3,
+        blk: 2,
+        pla: 1,
+        pkc: 1,
+        alf: 0,
+        ake: 1,
         paj: 0,
         rap: 0,
       },
