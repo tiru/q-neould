@@ -1,96 +1,132 @@
 <div class="cargo-dashboard">
   <main class="cargo-dashboard__main">
-    <div class="cargo-dashboard__stats-overview">
-      <div class="cargo-dashboard__stat-card" (click)="onCardClick('shipments')">
-        @if(!loader){
-        <div class="cargo-dashboard__card-content">
-          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--shipments">
-            📦
-          </div>
-          <div class="cargo-dashboard__stat-value">
-            {{ dashboardData.totalShipments }}
-          </div>
-          <div class="cargo-dashboard__stat-label">Active Shipments</div>
-          <div
-            class="cargo-dashboard__stat-trend"
-            [ngClass]="checkUpTrendClass(dashboardData.totalShipmentUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
+    <div class="dashboard-container">
+      <!-- Predictions Card -->
+      <div class="predictions-card">
+        <h2>7-Day ULD Count Predictions</h2>
+        
+        <!-- Day Selector (Scrollable Tabs) -->
+        <div class="day-selector">
+          <button
+            *ngFor="let day of [1,2,3,4,5,6,7]"
+            class="day-btn"
+            [class.active]="selectedDay === day"
+            (click)="selectDay(day)"
           >
-            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.totalShipmentUpDown) ? '↗️' : '↘️' }}</span>
-            {{dashboardData.totalShipmentUpDown}}
-          </div>
+            Day {{day}}
+          </button>
         </div>
-        } @else {
-        <app-loader></app-loader>
-        }
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+          <ejs-chart
+            id="prediction-chart"
+            [primaryXAxis]="primaryXAxis"
+            [primaryYAxis]="primaryYAxis"
+            [tooltip]="tooltip"
+            [title]="chartTitle"
+            height="280px"
+            [background]="'transparent'"
+            [enableAnimation]="true"
+          >
+            <e-series-collection>
+              <e-series
+                [dataSource]="predictionData"
+                type="Spline"
+                xName="day"
+                yName="count"
+                name="ULD Count"
+                [marker]="marker"
+                fill="#667eea"
+                width="3"
+              >
+              </e-series>
+            </e-series-collection>
+          </ejs-chart>
+        </div>
       </div>
 
-      <div class="cargo-dashboard__stat-card" (click)="onCardClick('performance')">
-        @if(!loader){
-        <div class="cargo-dashboard__card-content">
-          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--performance">
-            ⏱️
-          </div>
-          <div class="cargo-dashboard__stat-value">
-            {{ dashboardData.onTimePerformance }}%
-          </div>
-          <div class="cargo-dashboard__stat-label">On-Time Performance</div>
-          <div
-            class="cargo-dashboard__stat-trend"
-            [ngClass]="checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
-          >
-            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? '↗️' : '↘️' }}</span>
-            {{dashboardData.onTimePerformanceUpDown}}
-          </div>
+      <!-- Stats Overview Grid -->
+      <div class="cargo-dashboard__stats-overview">
+        <!-- Active Shipments Card -->
+        <div class="cargo-dashboard__stat-card cargo-dashboard__stat-card--shipments" (click)="onCardClick('shipments')">
+          <ng-container *ngIf="!loader; else loaderTemplate">
+            <div class="cargo-dashboard__card-content">
+              <div class="cargo-dashboard__card-icon">📦</div>
+              <div class="cargo-dashboard__stat-value">{{ dashboardData.totalShipments }}</div>
+              <div class="cargo-dashboard__stat-label">Active Shipments</div>
+              <div class="cargo-dashboard__stat-trend" 
+                   [class.cargo-dashboard__stat-trend--up]="checkUpTrendClass(dashboardData.totalShipmentUpDown)"
+                   [class.cargo-dashboard__stat-trend--down]="!checkUpTrendClass(dashboardData.totalShipmentUpDown)">
+                <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.totalShipmentUpDown) ? '↗️' : '↘️' }}</span>
+                {{dashboardData.totalShipmentUpDown}}
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loaderTemplate>
+            <app-loader></app-loader>
+          </ng-template>
         </div>
-        }@else {
-        <app-loader></app-loader>
-        }
-      </div>
 
-      <div class="cargo-dashboard__stat-card" (click)="onCardClick('revenue')">
-        @if(!loader){
-        <div class="cargo-dashboard__card-content">
-          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--revenue">
-            💰
-          </div>
-          <div class="cargo-dashboard__stat-value">
-            ${{ dashboardData.revenue }}M
-          </div>
-          <div class="cargo-dashboard__stat-label">Monthly Revenue</div>
-          <div
-            class="cargo-dashboard__stat-trend"
-            [ngClass]="checkUpTrendClass(dashboardData.revenueUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
-          >
-            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.revenueUpDown) ? '↗️' : '↘️' }}</span>
-            {{dashboardData.revenueUpDown}}
-          </div>
+        <!-- On-Time Performance Card -->
+        <div class="cargo-dashboard__stat-card cargo-dashboard__stat-card--performance" (click)="onCardClick('performance')">
+          <ng-container *ngIf="!loader; else loaderTemplate">
+            <div class="cargo-dashboard__card-content">
+              <div class="cargo-dashboard__card-icon">⏱️</div>
+              <div class="cargo-dashboard__stat-value">{{ dashboardData.onTimePerformance }}%</div>
+              <div class="cargo-dashboard__stat-label">On-Time Performance</div>
+              <div class="cargo-dashboard__stat-trend"
+                   [class.cargo-dashboard__stat-trend--up]="checkUpTrendClass(dashboardData.onTimePerformanceUpDown)"
+                   [class.cargo-dashboard__stat-trend--down]="!checkUpTrendClass(dashboardData.onTimePerformanceUpDown)">
+                <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? '↗️' : '↘️' }}</span>
+                {{dashboardData.onTimePerformanceUpDown}}
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loaderTemplate>
+            <app-loader></app-loader>
+          </ng-template>
         </div>
-        }@else {
-        <app-loader></app-loader>
-        }
-      </div>
 
-      <div class="cargo-dashboard__stat-card" (click)="onCardClick('alerts')">
-        @if(!loader){
-        <div class="cargo-dashboard__card-content">
-          <div class="cargo-dashboard__card-icon cargo-dashboard__card-icon--alerts">
-            🚨
-          </div>
-          <div class="cargo-dashboard__stat-value">
-            {{ dashboardData.activeAlerts }}
-          </div>
-          <div class="cargo-dashboard__stat-label">Active Alerts</div>
-          <div
-            class="cargo-dashboard__stat-trend"
-            [ngClass]="checkUpTrendClass(dashboardData.activeAlertsUpDown) ? 'cargo-dashboard__stat-trend--up' : 'cargo-dashboard__stat-trend--down'"
-          >
-            <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.activeAlertsUpDown) ? '↗️' : '↘️' }}</span>
-            {{dashboardData.activeAlertsUpDown}}
-          </div>
+        <!-- Monthly Revenue Card -->
+        <div class="cargo-dashboard__stat-card cargo-dashboard__stat-card--revenue" (click)="onCardClick('revenue')">
+          <ng-container *ngIf="!loader; else loaderTemplate">
+            <div class="cargo-dashboard__card-content">
+              <div class="cargo-dashboard__card-icon">💰</div>
+              <div class="cargo-dashboard__stat-value">${{ dashboardData.revenue }}M</div>
+              <div class="cargo-dashboard__stat-label">Monthly Revenue</div>
+              <div class="cargo-dashboard__stat-trend"
+                   [class.cargo-dashboard__stat-trend--up]="checkUpTrendClass(dashboardData.revenueUpDown)"
+                   [class.cargo-dashboard__stat-trend--down]="!checkUpTrendClass(dashboardData.revenueUpDown)">
+                <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.revenueUpDown) ? '↗️' : '↘️' }}</span>
+                {{dashboardData.revenueUpDown}}
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loaderTemplate>
+            <app-loader></app-loader>
+          </ng-template>
         </div>
-        }@else {
-        <app-loader></app-loader>
-        }
+
+        <!-- Active Alerts Card -->
+        <div class="cargo-dashboard__stat-card cargo-dashboard__stat-card--alerts" (click)="onCardClick('alerts')">
+          <ng-container *ngIf="!loader; else loaderTemplate">
+            <div class="cargo-dashboard__card-content">
+              <div class="cargo-dashboard__card-icon">🚨</div>
+              <div class="cargo-dashboard__stat-value">{{ dashboardData.activeAlerts }}</div>
+              <div class="cargo-dashboard__stat-label">Active Alerts</div>
+              <div class="cargo-dashboard__stat-trend"
+                   [class.cargo-dashboard__stat-trend--up]="checkUpTrendClass(dashboardData.activeAlertsUpDown)"
+                   [class.cargo-dashboard__stat-trend--down]="!checkUpTrendClass(dashboardData.activeAlertsUpDown)">
+                <span class="cargo-dashboard__trend-icon">{{ checkUpTrendClass(dashboardData.activeAlertsUpDown) ? '↗️' : '↘️' }}</span>
+                {{dashboardData.activeAlertsUpDown}}
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loaderTemplate>
+            <app-loader></app-loader>
+          </ng-template>
+        </div>
       </div>
     </div>
   </main>

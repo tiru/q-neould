@@ -1,236 +1,242 @@
-.predictive-analytics {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1rem;
-  height: 100%;
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+:host {
 
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  &__title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0;
-  }
-
-  &__weather {
-    display: flex;
-    align-items: center;
-  }
-
-  &__weather-icon {
-    font-size: 1.25rem;
-  }
-
-  &__content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  &__section {
-    margin-bottom: 1rem;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  &__section-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0 0 0.75rem 0;
-  }
-
-  &__chart-container {
-    width: 100%;
-    margin: 0.5rem 0;
-  }
-
-  &__risk-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  &__chart-wrapper {
-    width: 120px;
-    height: 120px;
-    flex-shrink: 0;
-  }
-
-  &__risk-legend {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  &__legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  &__legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  &__legend-label {
-    flex: 1;
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-
-  &__legend-value {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #1f2937;
-  }
-
-  &__predictions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  &__prediction-card {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__prediction-label {
-    font-size: 0.75rem;
-    color: #6b7280;
-    flex: 1;
-  }
-
-  &__prediction-value {
-    font-size: 1.25rem;
-    font-weight: bold;
-
-    &--success {
-      color: #10b981;
-    }
-
-    &--currency {
-      color: #6366f1;
-    }
-  }
-
-  &__recommendations {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  &__recommendation {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  &__recommendation-icon {
-    font-size: 1rem;
-    width: 24px;
-    text-align: center;
-  }
-
-  &__recommendation-content {
-    flex: 1;
-  }
-
-  &__recommendation-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 0.25rem;
-  }
-
-  &__recommendation-desc {
-    font-size: 0.625rem;
-    color: #6b7280;
-    line-height: 1.4;
-  }
-
-  &__recommendation-priority {
-    padding: 0.25rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.625rem;
-    font-weight: 500;
-    text-transform: uppercase;
-
-    &--high {
-      background: #fef2f2;
-      color: #dc2626;
-    }
-
-    &--medium {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    &--low {
-      background: #f0fdf4;
-      color: #16a34a;
-    }
-  }
-}
-
-@media (min-width: 768px) {
   .predictive-analytics {
-    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    height: 100%;
+    min-height: 80vh;
+    max-height: calc(100vh - 170px);
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    overflow: auto;
+
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
 
     &__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    &__weather {
+      display: flex;
+      align-items: center;
+    }
+
+    &__weather-icon {
       font-size: 1.25rem;
     }
 
-    &__predictions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+    &__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    &__section {
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &__section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0 0 0.75rem 0;
+    }
+
+    &__chart-container {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+
+    &__risk-container {
+      display: flex;
+      align-items: center;
       gap: 1rem;
     }
 
     &__chart-wrapper {
-      width: 140px;
-      height: 140px;
+      width: 120px;
+      height: 120px;
+      flex-shrink: 0;
     }
 
-    &__risk-container {
-      gap: 1.5rem;
+    &__risk-legend {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    &__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    &__legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    &__legend-label {
+      flex: 1;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    &__legend-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    &__predictions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    &__prediction-card {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__prediction-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      flex: 1;
+    }
+
+    &__prediction-value {
+      font-size: 1.25rem;
+      font-weight: bold;
+
+      &--success {
+        color: #10b981;
+      }
+
+      &--currency {
+        color: #6366f1;
+      }
+    }
+
+    &__recommendations {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    &__recommendation {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    &__recommendation-icon {
+      font-size: 1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    &__recommendation-content {
+      flex: 1;
+    }
+
+    &__recommendation-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+
+    &__recommendation-desc {
+      font-size: 0.625rem;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+
+    &__recommendation-priority {
+      padding: 0.25rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.625rem;
+      font-weight: 500;
+      text-transform: uppercase;
+
+      &--high {
+        background: #fef2f2;
+        color: #dc2626;
+      }
+
+      &--medium {
+        background: #fef3c7;
+        color: #d97706;
+      }
+
+      &--low {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
     }
   }
-}
 
-@media (min-width: 1024px) {
-  .predictive-analytics {
-    &__content {
-      gap: 1.5rem;
+  @media (min-width: 768px) {
+    .predictive-analytics {
+      padding: 1.5rem;
+
+      &__title {
+        font-size: 1.25rem;
+      }
+
+      &__predictions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      &__chart-wrapper {
+        width: 140px;
+        height: 140px;
+      }
+
+      &__risk-container {
+        gap: 1.5rem;
+      }
     }
+  }
 
-    &__section {
-      margin-bottom: 1.5rem;
+  @media (min-width: 1024px) {
+    .predictive-analytics {
+      &__content {
+        gap: 1.5rem;
+      }
+
+      &__section {
+        margin-bottom: 1.5rem;
+      }
     }
   }
 }

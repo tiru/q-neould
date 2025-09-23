@@ -1,9 +1,9 @@
 .flight-map-container {
     display: flex;
-    height: 100vh;
+    min-height: 80vh;
     background: #f0f2f5;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    position: relative
+    position: relative;
 }
 
 .control-panel {
@@ -371,10 +371,10 @@
 .mobile-panel-toggle {
     display: none;
     position: fixed;
-    top: 147px;
-    right: 32px;
-    width: 56px;
-    height: 56px;
+    top: 38px;
+    right: 4px;
+    width: 49px;
+    height: 49px;
     border-radius: 50%;
     background: #3498db;
     color: white;

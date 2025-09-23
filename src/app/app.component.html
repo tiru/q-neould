@@ -62,14 +62,19 @@
 
   <!-- Main Content -->
   <main class="main" [class.nav-open]="isNavOpen">
-    <router-outlet></router-outlet>
+    <!--<router-outlet></router-outlet>-->
+    <ion-app>
+      <ion-router-outlet></ion-router-outlet>
+    </ion-app>
+    <app-chat-bubble></app-chat-bubble>
   </main>
-  <footer class="footer">
+
+  <!-- <footer class="footer">
     <div class="footer-content"></div>
     <div class="footer-bottom">
       <p class="copyright">
         © 2025 CargoTrack Pro. Advanced logistics management powered by AI.
       </p>
     </div>
-  </footer>
+  </footer> -->
 </div>

@@ -44,10 +44,12 @@
   background: #ffffff;
   border-top: 1px solid #e5e7eb;
   margin-top: auto;
+  position: fixed;
+  bottom: 0;
 }
 
 .footer-content {
-  padding: 1rem;
+  // padding: 1rem;
 }
 
 .footer-bottom {
@@ -224,9 +226,10 @@
 }
 
 .main {
-  margin-top: 60px;
   transition: .3s;
-  min-height: calc(100vh - 60px)
+  min-height: calc(100vh - 60px);
+  top: 62px;
+  position: relative;
 }
 
 @media(min-width:769px) {
