@@ -18,7 +18,7 @@ import {
   styleUrls: ['./uld-forecast-chart.component.scss'],
 })
 export class UldForecastChartComponent implements OnInit {
-  public chartData: any[] = [];
+  @Input() chartData: any[] = [];
   public selectedPoint: any = null;
   public isMobile = false;
   public isTablet = false;
