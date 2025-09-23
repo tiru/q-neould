@@ -14,11 +14,18 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { CargoShipmentService } from '../service/cargo-shipment.service';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { UldForecastChartComponent } from '../uld-forecast-chart/uld-forecast-chart.component';
 
 @Component({
   selector: 'app-cargo-dashboard',
   // imports: [CommonModule, LoaderComponent, HttpClientModule],
-  imports: [CommonModule, ChartModule, HttpClientModule, LoaderComponent],
+  imports: [
+    CommonModule,
+    ChartModule,
+    HttpClientModule,
+    LoaderComponent,
+    UldForecastChartComponent,
+  ],
   providers: [
     LineSeriesService,
     CategoryService,
@@ -38,6 +45,7 @@ export class CargoDashboard implements OnInit {
   public currentTime = new Date();
   public dashboardData: any;
   public loader = false;
+  public forecastChartData: any[] = [];
 
   constructor(public cargoService: CargoShipmentService) {}
 
@@ -48,6 +56,7 @@ export class CargoDashboard implements OnInit {
       this.updateStats();
     }, 30000);
     this.getDashboardData();
+    this.getChartData();
   }
 
   checkUpTrendClass(data: any): boolean {
@@ -89,6 +98,14 @@ export class CargoDashboard implements OnInit {
         this.loader = false;
       });
     }, 1000);
+  }
+
+  private getChartData(): void {
+    this.cargoService.getForeCastChartData().subscribe((data) => {
+      console.log('data', data);
+      this.forecastChartData = data;
+      this.loader = false;
+    });
   }
 
   private updateCurrentTime(): void {

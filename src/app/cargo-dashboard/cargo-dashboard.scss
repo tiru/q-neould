@@ -3,7 +3,6 @@
     flex-direction: column;
     flex-grow: 1;
     overflow: auto;
-    max-height: calc(100vh - 170px)
 }
 
 .dashboard-container {
@@ -22,7 +21,8 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, .2);
-    padding: 1.5rem
+    padding: 1.5rem;
+    z-index: 9999999999999999;
 }
 
 .predictions-card h2 {
@@ -102,9 +102,9 @@
 .cargo-dashboard__stats-overview {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    width: 100%;
-    max-width: 1200px
+    /* 2 columns for mobile/tablet */
+    gap: 16px;
+    margin-top: 16px;
 }
 
 .cargo-dashboard__stat-card {
@@ -277,6 +277,10 @@
         padding: .3rem .6rem;
         font-size: .7rem
     }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (min-width:481px) and (max-width:768px) {
@@ -321,6 +325,11 @@
     .dashboard-container {
         gap: 1.5rem;
         padding: 0 1rem
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 columns for desktop */
     }
 
     .cargo-dashboard__main {

@@ -25,14 +25,14 @@ export class CargoShipmentService {
     //     catchError((error: HttpErrorResponse) => throwError(() => error))
     //   );
     return of({
-      "totalShipments": 847,
-      "totalShipmentUpDown" : "+12% from yesterday",
-      "onTimePerformance":92.38,
-       "onTimePerformanceUpDown": "+3.2% this week",
-      "revenue": 12.8,
-      "revenueUpDown": "+8.5% vs last month",
-      "activeAlerts": 5,
-      "activeAlertsUpDown": "-15% from last hour"
+      totalShipments: 847,
+      totalShipmentUpDown: '+12% from yesterday',
+      onTimePerformance: 92.38,
+      onTimePerformanceUpDown: '+3.2% this week',
+      revenue: 12.8,
+      revenueUpDown: '+8.5% vs last month',
+      activeAlerts: 5,
+      activeAlertsUpDown: '-15% from last hour',
     });
   }
 
@@ -225,7 +225,7 @@ export class CargoShipmentService {
   }
 
   getPredictiveAnalysisDetail() {
-     return this.http
+    return this.http
       .get<any>(`${this.prefixUrl}/delay-prediction${this.postfixUrl}`, {
         headers: this.headers,
       })
@@ -300,5 +300,110 @@ export class CargoShipmentService {
     //     },
     //   ],
     // });
+  }
+
+  getForeCastChartData() {
+    return of([
+      {
+        depDate: new Date('2025-08-01'),
+        uldCount: 12,
+        orig: 'DOH',
+        dest: 'AMS',
+        carEqpTyp: '35Q',
+        cgoCtgry: 'FREIGHT',
+        pcs: 366,
+        wt: 11428.59,
+        vol: 62.456,
+        pmc: 8,
+        qke: 2,
+        blk: 1,
+        pla: 1,
+        pkc: 0,
+        alf: 0,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depDate: new Date('2025-08-02'),
+        uldCount: 3,
+        orig: 'DOH',
+        dest: 'HYD',
+        carEqpTyp: '35Q',
+        cgoCtgry: 'FREIGHT',
+        pcs: 80,
+        wt: 5175.84,
+        vol: 33.38,
+        pmc: 2,
+        qke: 0,
+        blk: 0,
+        pla: 1,
+        pkc: 0,
+        alf: 0,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depDate: new Date('2025-08-03'),
+        uldCount: 3,
+        orig: 'DOH',
+        dest: 'LHR',
+        carEqpTyp: '35Q',
+        cgoCtgry: 'FREIGHT',
+        pcs: 404,
+        wt: 2830.2,
+        vol: 16.94,
+        pmc: 2,
+        qke: 0,
+        blk: 0,
+        pla: 1,
+        pkc: 0,
+        alf: 0,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depDate: new Date('2025-08-04'),
+        uldCount: 15,
+        orig: 'DOH',
+        dest: 'FRA',
+        carEqpTyp: '77D',
+        cgoCtgry: 'FREIGHT',
+        pcs: 520,
+        wt: 8750.3,
+        vol: 45.2,
+        pmc: 6,
+        qke: 3,
+        blk: 2,
+        pla: 2,
+        pkc: 1,
+        alf: 1,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+      {
+        depDate: new Date('2025-08-05'),
+        uldCount: 8,
+        orig: 'DOH',
+        dest: 'CDG',
+        carEqpTyp: '35Q',
+        cgoCtgry: 'FREIGHT',
+        pcs: 280,
+        wt: 6420.8,
+        vol: 38.7,
+        pmc: 4,
+        qke: 1,
+        blk: 1,
+        pla: 2,
+        pkc: 0,
+        alf: 0,
+        ake: 0,
+        paj: 0,
+        rap: 0,
+      },
+    ]);
   }
 }

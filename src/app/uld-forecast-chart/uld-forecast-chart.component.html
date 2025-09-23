@@ -1,0 +1,144 @@
+@if(chartData?.length){
+<div
+  class="chart-container"
+  [class.mobile]="isMobile"
+  [class.tablet]="isTablet"
+>
+  <div class="header">
+    <h2>ULD Count Forecast</h2>
+    <div class="chart-info" *ngIf="!isMobile">
+      <span class="info-text">Click on any point to view ULD details</span>
+    </div>
+  </div>
+
+  <div class="chart-wrapper">
+    <ejs-chart
+      id="line-chart"
+      [primaryXAxis]="primaryXAxis"
+      [primaryYAxis]="primaryYAxis"
+      [tooltip]="tooltip"
+      [height]="chartHeight"
+      [width]="chartWidth"
+      (pointClick)="onPointClick($event)"
+      [margin]="chartMargin"
+    >
+      <e-series-collection>
+        <e-series
+          [dataSource]="chartData"
+          type="Line"
+          xName="depDate"
+          yName="uldCount"
+          name="ULD Count"
+          [marker]="marker"
+          width="2"
+        >
+        </e-series>
+      </e-series-collection>
+    </ejs-chart>
+  </div>
+
+  <!-- Mobile/Tablet optimized ULD Details Modal/Panel -->
+  <div
+    *ngIf="selectedPoint"
+    class="uld-details-panel"
+    [class.mobile-panel]="isMobile"
+  >
+    <div class="details-header">
+      <h3 [class.mobile-title]="isMobile">
+        ULD Details - {{ selectedPoint.depDate | date : "dd/MM/yyyy" }}
+      </h3>
+      <button
+        (click)="closeDetails()"
+        class="close-btn"
+        [class.mobile-close]="isMobile"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="details-content" [class.mobile-content]="isMobile">
+      <!-- Summary Card -->
+      <div class="summary-card">
+        <div class="card-header">
+          <h4>Flight Summary</h4>
+        </div>
+        <div class="summary-grid" [class.mobile-summary]="isMobile">
+          <div class="summary-item">
+            <span class="label">Total ULD Count:</span>
+            <span class="value highlight">{{ selectedPoint.uldCount }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Route:</span>
+            <span class="value"
+              >{{ selectedPoint.orig }} → {{ selectedPoint.dest }}</span
+            >
+          </div>
+          <div class="summary-item">
+            <span class="label">Equipment:</span>
+            <span class="value">{{ selectedPoint.carEqpTyp }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Category:</span>
+            <span class="value">{{ selectedPoint.cgoCtgry }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ULD Breakdown Card -->
+      <div class="uld-card">
+        <div class="card-header">
+          <h4>ULD Breakdown</h4>
+        </div>
+        <div
+          class="uld-grid"
+          [class.mobile-uld-grid]="isMobile"
+          [class.tablet-uld-grid]="isTablet"
+        >
+          <div
+            class="uld-item"
+            *ngFor="let uld of uldTypes"
+            [class.active]="selectedPoint[uld.key] > 0"
+            [class.mobile-uld-item]="isMobile"
+          >
+            <div class="uld-label">{{ uld.label }}</div>
+            <div
+              class="uld-value"
+              [class.has-value]="selectedPoint[uld.key] > 0"
+            >
+              {{ selectedPoint[uld.key] }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cargo Information Card -->
+      <div class="cargo-card">
+        <div class="card-header">
+          <h4>Cargo Information</h4>
+        </div>
+        <div class="cargo-grid" [class.mobile-cargo]="isMobile">
+          <div class="cargo-item">
+            <span class="label">Pieces:</span>
+            <span class="value">{{ selectedPoint.pcs | number }}</span>
+          </div>
+          <div class="cargo-item">
+            <span class="label">Weight:</span>
+            <span class="value"
+              >{{ selectedPoint.wt | number : "1.2-2" }} kg</span
+            >
+          </div>
+          <div class="cargo-item">
+            <span class="label">Volume:</span>
+            <span class="value"
+              >{{ selectedPoint.vol | number : "1.3-3" }} m³</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsive Backdrop -->
+  <div *ngIf="selectedPoint" class="backdrop" (click)="closeDetails()"></div>
+</div>
+}
