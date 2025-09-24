@@ -4,6 +4,9 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { registerLicense } from '@syncfusion/ej2-base';
+registerLicense(
+  'Ngo9BigBOggjHTQxAR8/V1JFaF5cXGRCf1NpR2NGfV5ycUVCalhSTnJfUiweQnxTdEBjUH1ecHBRRWRfVkB+WUleYg==');
 
 bootstrapApplication(AppComponent, {
   providers: [
