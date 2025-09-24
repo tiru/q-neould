@@ -1,5 +1,4 @@
 <div class="chat-bubble">
-  <!-- Chat Bubble Button -->
   <div class="chat-bubble__button" (click)="toggleChat()" [class.chat-bubble__button--active]="isOpen">
     <svg class="chat-bubble__icon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
@@ -10,9 +9,7 @@
       </svg>
     </div>
   </div>
-
-  <!-- Chat Window -->
-  <div class="chat-bubble__window" [class.chat-bubble__window--open]="isOpen">
+  <div class="chat-bubble__window" [class.chat-bubble__window--open]="isOpen" [class.chat-bubble__window--fullscreen]="isFullscreen">
     <!-- Header -->
     <div class="chat-bubble__header">
       <h3 class="chat-bubble__title">Chat Support</h3>
@@ -21,6 +18,14 @@
           <span class="chat-bubble__status-indicator"></span>
           <span class="chat-bubble__status-text">Online</span>
         </div>
+        <button class="chat-bubble__expand-button" (click)="toggleFullscreen()" [attr.aria-label]="isFullscreen ? 'Minimize' : 'Expand'">
+          <svg *ngIf="!isFullscreen" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+          </svg>
+          <svg *ngIf="isFullscreen" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+          </svg>
+        </button>
         <button class="chat-bubble__close-button" (click)="toggleChat()">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -32,7 +37,7 @@
     <!-- Messages -->
     <div class="chat-bubble__messages">
       <div 
-        *ngFor="let message of messages" 
+        *ngFor="let message of messages"
         class="chat-bubble__message-wrapper"
         [ngClass]="'chat-bubble__message-wrapper--' + message.type"
       >
