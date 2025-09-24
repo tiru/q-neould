@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ChartModule,
@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CargoShipmentService } from '../service/cargo-shipment.service';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { UldForecastChartComponent } from '../uld-forecast-chart/uld-forecast-chart.component';
+import { IonGrid, IonRow, IonCol } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-cargo-dashboard',
@@ -25,7 +26,10 @@ import { UldForecastChartComponent } from '../uld-forecast-chart/uld-forecast-ch
     HttpClientModule,
     LoaderComponent,
     UldForecastChartComponent,
-  ],
+    IonGrid,
+    IonRow,
+    IonCol
+],
   providers: [
     LineSeriesService,
     CategoryService,
@@ -46,8 +50,9 @@ export class CargoDashboard implements OnInit {
   public dashboardData: any;
   public loader = false;
   public forecastChartData: any[] = [];
-
+  public dateForFilter: any = [];
   constructor(public cargoService: CargoShipmentService) {}
+  @ViewChild(UldForecastChartComponent) childComponent!: UldForecastChartComponent;
 
   ngOnInit(): void {
     this.updateCurrentTime();
@@ -108,6 +113,13 @@ export class CargoDashboard implements OnInit {
     });
   }
 
+   handleChildData(data: string) {
+      console.log('Received from child:', data);
+      this.dateForFilter = data;
+      this.selectedDay = this.dateForFilter[0];
+      // You can now use this data in the parent component
+    }
+
   private updateCurrentTime(): void {
     this.currentTime = new Date();
   }
@@ -121,7 +133,7 @@ export class CargoDashboard implements OnInit {
       );
     }
   }
-  selectedDay: number = 1;
+  selectedDay: number = this.dateForFilter[0];
   isDrawerOpen: boolean = false;
 
   // Chart Data for different days
@@ -273,8 +285,11 @@ export class CargoDashboard implements OnInit {
 
   chartTitle = '';
 
-  selectDay(day: number): void {
+  selectDay(day: any): void {
     this.selectedDay = day;
+    // if(this.childComponent) {
+    //   this.childComponent.applyFilters(day);
+    // }
   }
 
   openDetailsDrawer(): void {

@@ -1,11 +1,112 @@
-<div class="cargo-dashboard">
+<ion-grid class="ion-no-padding" style="width:100%">
+  <ion-row>
+    <ion-col class="ion-padding">
+      <ul>
+        <li><span class="txtlbl1">Hello,</span><span class="txtlbl2">Suren</span></li>
+        <li>London (LHR)</li>
+      </ul>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="ion-no-padding ion-padding-horizontal ion-padding-bottom">
+      <div class="cardgenericwrap">
+        <div class="titlepnl">ULD Predition (Next 7 Days)</div>
+        <div class="contentpnl">
+          <div class="datelispnl ion-margin-bottom">
+             @for (item of dateForFilter; track item; let i = $index) {
+                <ul (click)="selectDay(item)" [class.active]="selectedDay === item">
+                  <li>{{item | date: 'MMM'}}</li>
+                  <li>{{item | date: 'dd'}}</li>
+                </ul>
+              }
+          </div>
+          <div class="chartpnl">
+            @if(forecastChartData?.length){
+            <app-uld-forecast-chart
+                    [chartData]="forecastChartData"
+                    (childEvent)="handleChildData($event)"
+                  ></app-uld-forecast-chart>
+            }
+            <!-- <div class="cargo-dashboard">
+              <main class="cargo-dashboard__main">
+                <div class="dashboard-container">
+                    
+                </div>
+              </main>
+            </div> -->
+            
+
+            <!-- <div class="cargo-dashboard">
+            <main class="cargo-dashboard__main">
+              <div class="dashboard-container">
+                
+                 <div class="predictions-card">
+                  
+                  <div class="day-selector">
+                    <button
+                      *ngFor="let day of [1,2,3,4,5,6,7]"
+                      class="day-btn"
+                      [class.active]="selectedDay === day"
+                      (click)="selectDay(day)"
+                    >
+                      Day {{day}}
+                    </button>
+                  </div>
+
+                
+                  <div class="chart-container">
+                    <ejs-chart
+                      id="prediction-chart"
+                      [primaryXAxis]="primaryXAxis"
+                      [primaryYAxis]="primaryYAxis"
+                      [tooltip]="tooltip"
+                      [title]="chartTitle"
+                      height="280px"
+                      [background]="'transparent'"
+                      [enableAnimation]="true"
+                    >
+                      <e-series-collection>
+                        <e-series
+                          [dataSource]="predictionData"
+                          type="Spline"
+                          xName="day"
+                          yName="count"
+                          name="ULD Count"
+                          [marker]="marker"
+                          fill="#667eea"
+                          width="3"
+                        >
+                        </e-series>
+                      </e-series-collection>
+                    </ejs-chart>
+                  </div>
+                </div> 
+                 <div class="predictions-card">
+                  
+                </div>
+
+                
+
+              </div>
+            </main>
+          </div> -->
+
+          </div>
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+<!-- <div class="cargo-dashboard" style="display:none">
   <main class="cargo-dashboard__main">
     <div class="dashboard-container">
-      <!-- Predictions Card -->
+      
       <div class="predictions-card">
         <h2>7-Day ULD Count Predictions</h2>
 
-        <!-- Day Selector (Scrollable Tabs) -->
+        
         <div class="day-selector">
           <button
             *ngFor="let day of [1,2,3,4,5,6,7]"
@@ -17,7 +118,7 @@
           </button>
         </div>
 
-        <!-- Chart Container -->
+       
         <div class="chart-container">
           <ejs-chart
             id="prediction-chart"
@@ -51,9 +152,9 @@
         ></app-uld-forecast-chart>
       </div>
 
-      <!-- Stats Overview Grid -->
+      
       <div class="cargo-dashboard__stats-overview">
-        <!-- Active Shipments Card -->
+        
         <div
           class="cargo-dashboard__stat-card cargo-dashboard__stat-card--shipments"
           (click)="onCardClick('shipments')"
@@ -83,7 +184,7 @@
           </ng-template>
         </div>
 
-        <!-- On-Time Performance Card -->
+       
         <div
           class="cargo-dashboard__stat-card cargo-dashboard__stat-card--performance"
           (click)="onCardClick('performance')"
@@ -113,7 +214,7 @@
           </ng-template>
         </div>
 
-        <!-- Monthly Revenue Card -->
+       
         <div
           class="cargo-dashboard__stat-card cargo-dashboard__stat-card--revenue"
           (click)="onCardClick('revenue')"
@@ -143,7 +244,7 @@
           </ng-template>
         </div>
 
-        <!-- Active Alerts Card -->
+        
         <div
           class="cargo-dashboard__stat-card cargo-dashboard__stat-card--alerts"
           (click)="onCardClick('alerts')"
@@ -175,4 +276,4 @@
       </div>
     </div>
   </main>
-</div>
+</div> -->

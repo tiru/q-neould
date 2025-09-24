@@ -1,5 +1,14 @@
-import { Component, OnInit, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  Input,
+  ViewChild,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   ChartComponent,
   ChartModule,
@@ -7,89 +16,159 @@ import {
   DateTimeService,
   TooltipService,
   MarkerSettingsModel,
+  ZoomService,
+  DataLabelService,
+  CrosshairService,
 } from '@syncfusion/ej2-angular-charts';
+import { IonAlert } from "@ionic/angular/standalone";
+
+interface UldData {
+  depDate: Date;
+  uldCount: number;
+  orig: string;
+  numberOfFlights: number;
+  pcs: number;
+  wt: number;
+  vol: number;
+  pmc: number;
+  qke: number;
+  blk: number;
+  pla: number;
+  pkc: number;
+  alf: number;
+  ake: number;
+  paj: number;
+  rap: number;
+}
 
 @Component({
   selector: 'app-uld-forecast-chart',
   standalone: true,
-  imports: [CommonModule, ChartModule],
-  providers: [LineSeriesService, DateTimeService, TooltipService],
+  imports: [CommonModule, ChartModule, FormsModule, IonAlert],
+  providers: [
+    LineSeriesService,
+    DateTimeService,
+    TooltipService,
+    ZoomService,
+    DataLabelService,
+    CrosshairService,
+  ],
   templateUrl: './uld-forecast-chart.component.html',
   styleUrls: ['./uld-forecast-chart.component.scss'],
 })
 export class UldForecastChartComponent implements OnInit {
-  @Input() chartData: any[] = [];
+  @Input() chartData: UldData[] = [];
+  @ViewChild('chart') chart!: ChartComponent;
+  @Output() childEvent = new EventEmitter<string>();
+  isAlertOpen = false;
+  alertButtons = ['Close'];
   public selectedPoint: any = null;
+  public filteredData: UldData[] = [];
   public isMobile = false;
   public isTablet = false;
-  public chartHeight = '400px';
+  public chartHeight = '450px';
   public chartWidth = '100%';
+  public dateForFilter : any = [];
+
+  // Filter properties
+  public selectedDateRange = 'all';
+  public dateRangeForSelect: string[] = [];
+  public selectedOrigin = 'DOH';
+  public customStartDate = '';
+  public customEndDate = '';
+  public availableOrigins: string[] = [];
+  public totalUlds = 0;
+
+  setOpen(isOpen: boolean) {
+    this.isAlertOpen = isOpen;
+  }
+
+  sendMessageToParent() {
+    this.childEvent.emit(this.dateForFilter);
+  }
 
   public primaryXAxis: Object = {
     valueType: 'DateTime',
-    title: '',
-    labelFormat: 'HH:mm',
-    intervalType: 'Hours',
-    interval: 4,
+    title: 'Departure Date',
+    labelFormat: 'MMM dd',
+    intervalType: 'Auto',
     labelStyle: {
       size: '11px',
-      color: '#666666',
-      fontFamily: 'Arial, sans-serif',
+      color: '#64748b',
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontWeight: '500',
     },
-    lineStyle: { width: 1, color: '#e0e0e0' },
-    majorGridLines: {
-      width: 1,
-      color: '#f0f0f0',
-      dashArray: '0',
-    },
-    majorTickLines: { width: 0 },
+    lineStyle: { width: 1, color: '#e2e8f0' },
+    majorGridLines: { width: 1, color: '#f1f5f9', dashArray: '2,2' },
+    majorTickLines: { width: 1, color: '#cbd5e1' },
     minorTickLines: { width: 0 },
   };
 
   public primaryYAxis: Object = {
-    title: '',
+    title: 'ULD Count',
     minimum: 0,
-    maximum: 60,
-    interval: 20,
     labelStyle: {
       size: '11px',
-      color: '#666666',
-      fontFamily: 'Arial, sans-serif',
+      color: '#64748b',
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontWeight: '500',
     },
-    lineStyle: { width: 1, color: '#e0e0e0' },
-    majorGridLines: {
-      width: 1,
-      color: '#f0f0f0',
-      dashArray: '0',
-    },
-    majorTickLines: { width: 0 },
+    lineStyle: { width: 1, color: '#e2e8f0' },
+    majorGridLines: { width: 1, color: '#f1f5f9', dashArray: '2,2' },
+    majorTickLines: { width: 1, color: '#cbd5e1' },
     minorTickLines: { width: 0 },
   };
 
   public marker: MarkerSettingsModel = {
     visible: true,
-    width: 6,
-    height: 6,
-    fill: '#4CAF50',
-    border: { width: 0 },
+    width: 8,
+    height: 8,
+    fill: '#3b82f6',
+    border: { width: 2, color: '#ffffff' },
+    shape: 'Circle',
   };
 
   public tooltip: Object = {
     enable: true,
-    format: 'Time: ${point.x}<br/>ULD Count: ${point.y}<br/>Click for details',
+    format:
+      '<b>${point.x}</b><br/>ULDs: <b>${point.y}</b><br/><i>Click for details</i>',
     textStyle: {
-      size: '11px',
-      fontFamily: 'Arial, sans-serif',
+      size: '12px',
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      color: '#ffffff',
     },
-    fill: 'rgba(0, 0, 0, 0.8)',
+    fill: '#1e293b',
     border: { width: 0 },
+    opacity: 0.9,
+  };
+
+  public crosshair: Object = {
+    enable: true,
+    lineType: 'Vertical',
+    line: { width: 1, color: '#64748b', dashArray: '5,5' },
+  };
+
+  public zoomSettings: Object = {
+    enableMouseWheelZooming: true,
+    enablePinchZooming: true,
+    enableSelectionZooming: true,
+    mode: 'X',
+  };
+
+  public animation: Object = {
+    enable: true,
+    duration: 1500,
+    delay: 0,
   };
 
   public chartMargin: Object = {
-    left: 40,
-    right: 20,
-    top: 20,
-    bottom: 40,
+    left: 60,
+    right: 30,
+    top: 30,
+    bottom: 60,
   };
 
   public chartArea: Object = {
@@ -99,6 +178,10 @@ export class UldForecastChartComponent implements OnInit {
 
   public chartBorder: Object = {
     width: 0,
+  };
+
+  public legendSettings: Object = {
+    visible: false,
   };
 
   public uldTypes = [
@@ -122,7 +205,10 @@ export class UldForecastChartComponent implements OnInit {
   ngOnInit(): void {
     this.checkScreenSize();
     this.updateChartDimensions();
-    this.loadChartData();
+    this.processData();
+    this.initializeFilters();
+    this.applyFilters();
+    this.sendMessageToParent();
   }
 
   private checkScreenSize(): void {
@@ -133,187 +219,158 @@ export class UldForecastChartComponent implements OnInit {
 
   private updateChartDimensions(): void {
     if (this.isMobile) {
-      this.chartHeight = '280px';
-      this.marker = { ...this.marker, width: 5, height: 5 };
-      this.primaryXAxis = {
-        ...this.primaryXAxis,
-        labelStyle: {
-          size: '10px',
-          color: '#666666',
-          fontFamily: 'Arial, sans-serif',
-        },
-      };
-      this.primaryYAxis = {
-        ...this.primaryYAxis,
-        labelStyle: {
-          size: '10px',
-          color: '#666666',
-          fontFamily: 'Arial, sans-serif',
-        },
-      };
-    } else if (this.isTablet) {
       this.chartHeight = '320px';
       this.marker = { ...this.marker, width: 6, height: 6 };
+      this.chartMargin = { left: 10, right: 10, top: 10, bottom: 10 };
+    } else if (this.isTablet) {
+      this.chartHeight = '380px';
+      this.chartMargin = { left: 50, right: 25, top: 25, bottom: 55 };
     } else {
-      this.chartHeight = '360px';
-      this.marker = { ...this.marker, width: 6, height: 6 };
+      this.chartHeight = '450px';
+      this.chartMargin = { left: 60, right: 30, top: 30, bottom: 60 };
     }
   }
 
-  private loadChartData(): void {
-    // Sample data with hourly time intervals to match the attached chart
-    const baseDate = new Date('2025-08-01');
+  private generateExtendedData(): UldData[] {
+    const extendedData: UldData[] = [];
+    const origins =[
+      ...new Set(this.chartData.map((item) => item.orig)),
+    ].sort();
 
-    this.chartData = [
-      {
-        depTime: new Date(baseDate.getTime() + 0 * 60 * 60 * 1000), // 00:00
-        uldCount: 45,
-        orig: 'DOH',
-        dest: 'AMS',
-        carEqpTyp: '35Q',
-        cgoCtgry: 'FREIGHT',
-        pcs: 366,
-        wt: 11428.59,
-        vol: 62.456,
-        pmc: 8,
-        qke: 2,
-        blk: 1,
-        pla: 1,
-        pkc: 0,
-        alf: 0,
-        ake: 0,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 4 * 60 * 60 * 1000), // 04:00
-        uldCount: 52,
-        orig: 'DOH',
-        dest: 'HYD',
-        carEqpTyp: '35Q',
-        cgoCtgry: 'FREIGHT',
-        pcs: 380,
-        wt: 5175.84,
-        vol: 33.38,
-        pmc: 12,
-        qke: 3,
-        blk: 2,
-        pla: 1,
-        pkc: 1,
-        alf: 0,
-        ake: 0,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 8 * 60 * 60 * 1000), // 08:00
-        uldCount: 38,
-        orig: 'DOH',
-        dest: 'LHR',
-        carEqpTyp: '35Q',
-        cgoCtgry: 'FREIGHT',
-        pcs: 404,
-        wt: 2830.2,
-        vol: 16.94,
-        pmc: 7,
-        qke: 1,
-        blk: 0,
-        pla: 2,
-        pkc: 0,
-        alf: 1,
-        ake: 0,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 12 * 60 * 60 * 1000), // 12:00
-        uldCount: 42,
-        orig: 'DOH',
-        dest: 'FRA',
-        carEqpTyp: '77D',
-        cgoCtgry: 'FREIGHT',
-        pcs: 520,
-        wt: 8750.3,
-        vol: 45.2,
-        pmc: 9,
-        qke: 2,
-        blk: 1,
-        pla: 3,
-        pkc: 0,
-        alf: 0,
-        ake: 1,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 16 * 60 * 60 * 1000), // 16:00
-        uldCount: 35,
-        orig: 'DOH',
-        dest: 'CDG',
-        carEqpTyp: '35Q',
-        cgoCtgry: 'FREIGHT',
-        pcs: 280,
-        wt: 6420.8,
-        vol: 38.7,
-        pmc: 6,
-        qke: 1,
-        blk: 0,
-        pla: 2,
-        pkc: 1,
-        alf: 0,
-        ake: 0,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 20 * 60 * 60 * 1000), // 20:00
-        uldCount: 40,
-        orig: 'DOH',
-        dest: 'JFK',
-        carEqpTyp: '35Q',
-        cgoCtgry: 'FREIGHT',
-        pcs: 450,
-        wt: 7890.5,
-        vol: 42.1,
-        pmc: 8,
-        qke: 2,
-        blk: 1,
-        pla: 2,
-        pkc: 0,
-        alf: 1,
-        ake: 0,
-        paj: 0,
-        rap: 0,
-      },
-      {
-        depTime: new Date(baseDate.getTime() + 24 * 60 * 60 * 1000), // 24:00 (next day 00:00)
-        uldCount: 48,
-        orig: 'DOH',
-        dest: 'NRT',
-        carEqpTyp: '77D',
-        cgoCtgry: 'FREIGHT',
-        pcs: 380,
-        wt: 9200.3,
-        vol: 51.2,
-        pmc: 10,
-        qke: 3,
-        blk: 2,
-        pla: 1,
-        pkc: 1,
-        alf: 0,
-        ake: 1,
-        paj: 0,
-        rap: 0,
-      },
-    ];
+    // Generate data for August and September 2025
+    const startDate = new Date(); // August 1st
+    // Get the current date
+    const currentDate = new Date();
+    // Create a new Date object to avoid modifying the original
+    const futureDate = new Date(currentDate);
+    // Number of days to add
+    const daysToAdd = 7;
+    // Add the days
+    futureDate.setDate(futureDate.getDate() + daysToAdd);
+    const endDate = futureDate; // September 30th
+
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      origins.forEach((origin) => {
+        // Random chance for each origin to have data on each day
+        if (Math.random() > 0.3) {
+          const numberOfFlights = Math.floor(Math.random() * 300) + 1;
+          const baseUld = Math.floor(Math.random() * 2500) + 50;
+
+          extendedData.push({
+            depDate: new Date(d),
+            orig: origin,
+            numberOfFlights,
+            uldCount: baseUld,
+            pcs: Math.floor(Math.random() * 100000) + 1000,
+            wt: Math.floor(Math.random() * 4000000) + 10000,
+            vol: Math.floor(Math.random() * 20000) + 100,
+            pmc: Math.floor(baseUld * 0.6) + Math.floor(Math.random() * 200),
+            qke: Math.floor(baseUld * 0.2) + Math.floor(Math.random() * 100),
+            blk: Math.floor(Math.random() * 10),
+            pla: Math.floor(Math.random() * 200),
+            pkc: Math.floor(Math.random() * 20),
+            alf: Math.floor(Math.random() * 10),
+            ake: Math.floor(Math.random() * 30),
+            paj: Math.floor(Math.random() * 40),
+            rap: Math.floor(Math.random() * 20),
+          });
+        }
+      });
+    }
+
+    return extendedData.sort(
+      (a, b) => a.depDate.getTime() - b.depDate.getTime()
+    );
+  }
+
+  private processData(): void {
+    // Use extended generated data instead of limited sample
+    console.log("before" + this.chartData.length);
+    this.chartData; //= this.generateExtendedData();
+     console.log("after" + this.chartData.length);
+  }
+
+  private initializeFilters(): void {
+    // Extract unique origins
+    this.availableOrigins = [
+      ...new Set(this.chartData.map((item) => item.orig)),
+    ].sort();
+
+    console.log("iorigins" + this.availableOrigins);
+
+  }
+
+  public applyFilters(dateRange? :any): void {
+    let filtered = [...this.chartData];
+
+    // Apply origin filter
+    if (this.selectedOrigin !== 'all') {
+      filtered = filtered.filter((item) => item.orig === this.selectedOrigin);
+      if(dateRange) {
+        filtered = filtered.filter((item) => item.depDate === dateRange);
+      }
+    }
+    this.filteredData = filtered;
+
+    if(this.filteredData.length == 0){
+      this.setOpen(true);
+      this.processData();
+    }
+
+    this.totalUlds = this.filteredData.reduce(
+      (sum, item) => sum + item.uldCount,
+      0
+    );
+
+    let filterForDate = filtered;
+    filterForDate.forEach((dateFilter) => {
+      let dateText = dateFilter.depDate.toLocaleString('default', { month: 'short', day: 'numeric' });
+      this.dateForFilter.push(dateText);
+    });
+
+    console.log("dateReange select" + this.dateForFilter);
+
+    // Update chart axis based on filtered data
+    this.updateChartAxis();
+  }
+
+  private updateChartAxis(): void {
+    if (this.filteredData.length > 0) {
+      let interval = 1;
+      let labelFormat = 'MMM dd';
+
+      this.primaryXAxis = {
+        ...this.primaryXAxis,
+        interval,
+        labelFormat,
+        intervalType: 'Days',
+      };
+    }
   }
 
   onPointClick(event: any): void {
     const clickedIndex = event.pointIndex;
-    this.selectedPoint = { ...this.chartData[clickedIndex] };
+    this.selectedPoint = { ...this.filteredData[clickedIndex] };
   }
 
   closeDetails(): void {
     this.selectedPoint = null;
+  }
+
+  getDateRange(): string {
+    if (this.filteredData.length === 0) return 'No data';
+    const minDate = this.filteredData[0].depDate;
+    const maxDate = this.filteredData[this.filteredData.length - 1].depDate;
+    return `${minDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })} - ${maxDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })}`;
   }
 }

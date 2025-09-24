@@ -10,21 +10,21 @@ import { catchError, map, Observable, of, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class CargoShipmentService {
-  prefixUrl = 'https://azurespringbootmicroservice-duczecgzdze8a9cf.swedencentral-01.azurewebsites.net/qneould/api/v1';
+  prefixUrl = 'https://azurespringbootmicroservice-duczecgzdze8a9cf.swedencentral-01.azurewebsites.net/qneould/flight-cargo/api/v1';
   postfixUrl = '?a=neo';
   headers = new HttpHeaders().set('Accept-Language', 'en');
   constructor(private readonly http: HttpClient) {}
 
   getDashboardDetail(): Observable<any> {
-    // return this.http
-    //   .get<any>(`${this.prefixUrl}/dashboard${this.postfixUrl}`, {
-    //     headers: this.headers,
-    //   })
-    //   .pipe(
-    //     map((response) => response),
-    //     catchError((error: HttpErrorResponse) => throwError(() => error))
-    //   );
-    return of({
+     return this.http
+       .get<any>(`https://azurespringbootmicroservice-duczecgzdze8a9cf.swedencentral-01.azurewebsites.net/qneould/flight-cargo/api/v1/default`, {
+         headers: this.headers,
+       })
+       .pipe(
+         map((response) => response),
+         catchError((error: HttpErrorResponse) => throwError(() => error))
+       );
+    /**return of({
       totalShipments: 847,
       totalShipmentUpDown: '+12% from yesterday',
       onTimePerformance: 92.38,
@@ -33,12 +33,12 @@ export class CargoShipmentService {
       revenueUpDown: '+8.5% vs last month',
       activeAlerts: 5,
       activeAlertsUpDown: '-15% from last hour',
-    });
+    });*/
   }
 
   getRevenueOptimizationDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/revenue-optimisation${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/revenue-optimisation`, {
         headers: this.headers,
       })
       .pipe(
@@ -106,7 +106,7 @@ export class CargoShipmentService {
 
   getCargoDelayMonitorDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/delay-monitor${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/delay-monitor`, {
         headers: this.headers,
       })
       .pipe(
@@ -226,7 +226,7 @@ export class CargoShipmentService {
 
   getPredictiveAnalysisDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/delay-prediction${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/delay-prediction`, {
         headers: this.headers,
       })
       .pipe(
@@ -303,9 +303,17 @@ export class CargoShipmentService {
   }
 
   getForeCastChartData() {
-    return of([
+    return this.http
+       .get<any>(`https://azurespringbootmicroservice-duczecgzdze8a9cf.swedencentral-01.azurewebsites.net/qneould/flight-cargo/api/v1/default`, {
+         headers: this.headers,
+       })
+       .pipe(
+         map((response) => response),
+         catchError((error: HttpErrorResponse) => throwError(() => error))
+       );
+    /*return of([
       {
-        depDate: new Date('2025-08-01'),
+        depDate: '2025-08-01',
         uldCount: 12,
         orig: 'DOH',
         dest: 'AMS',
@@ -325,7 +333,7 @@ export class CargoShipmentService {
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-02'),
+        depDate: '2025-08-02',
         uldCount: 3,
         orig: 'DOH',
         dest: 'HYD',
@@ -345,7 +353,7 @@ export class CargoShipmentService {
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-03'),
+        depDate: '2025-08-03',
         uldCount: 3,
         orig: 'DOH',
         dest: 'LHR',
@@ -365,7 +373,7 @@ export class CargoShipmentService {
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-04'),
+        depDate: '2025-08-04',
         uldCount: 15,
         orig: 'DOH',
         dest: 'FRA',
@@ -385,7 +393,7 @@ export class CargoShipmentService {
         rap: 0,
       },
       {
-        depDate: new Date('2025-08-05'),
+        depDate: '2025-08-05',
         uldCount: 8,
         orig: 'DOH',
         dest: 'CDG',
@@ -404,6 +412,6 @@ export class CargoShipmentService {
         paj: 0,
         rap: 0,
       },
-    ]);
+    ]);*/
   }
 }

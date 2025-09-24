@@ -22,6 +22,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    applicationVariants.configureEach {
+      outputs.configureEach {
+        outputFileName = "QNeoULD-${versionName}.apk"
+      }
+    }
 }
 
 repositories {

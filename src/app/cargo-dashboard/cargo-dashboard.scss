@@ -4,9 +4,62 @@
     flex-grow: 1;
     overflow: auto;
 }
+.cardgenericwrap{
+    background: #FFF;
+    border-radius:1rem;
+    padding:1rem;
+    box-shadow: var(--box-shadow);
+    .titlepnl{
+        font-size: 0.9rem;
+        font-weight:bold;
+        padding-bottom:1rem;
+        margin-bottom:1rem;
+        border-bottom: 0.1rem solid #DBDEE8;
+    }
+    .contentpnl{
+        min-height: 20rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        .datelispnl{
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-start;
+          align-items: center;
+          width:100%;
+          overflow:auto;
+          ul{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+    border-radius: 0.5rem;
+    gap: 0.3rem;
+            background: var(--background-color);
+            li:nth-child(1){
+              font-size: 0.75rem;
+              font-weight: 400;
+            }
+            li:nth-child(2){
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+          }
+          ul.active{
+            background: var(--primary-color);
+            
+            li{
+                color: #FFF;
+            }
+          }
+        }
+    }
+}
 
 .dashboard-container {
-    max-width: 100vw;
+    width: 85vw;
     margin: 0 auto;
     display: flex;
     flex-direction: column;

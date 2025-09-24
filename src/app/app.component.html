@@ -1,10 +1,16 @@
-<div class="app content">
-    <!-- Main Content -->
-  <main class="main">
-    <!--<router-outlet></router-outlet>-->
-    <ion-app>
+  <ion-header translucent="true">
+    <ion-toolbar color="transparent">
+      <ion-grid class="ion-no-padding ion-no-margin ion-padding-horizontal">
+        <ion-row>
+          <ion-col size="auto"><span class="logotxt1">Q</span><span class="logotxt2">NeoULD</span></ion-col>
+          <ion-col> </ion-col>
+          <ion-col size="auto"><input type="button" value="" class="btn_notification"/></ion-col>
+          <ion-col size="auto" class="ion-padding-start"><input type="button" value="" class="btn_profile"/></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
       <ion-router-outlet></ion-router-outlet>
-    </ion-app>
     <app-chat-bubble></app-chat-bubble>
-  </main>
-</div>
+  </ion-content>

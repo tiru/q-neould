@@ -1,0 +1,12 @@
+ {
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "type": "chrome",
+        "request": "launch",
+        "name": "Launch against Chrome",
+        "url": "http://localhost:8100", // Adjust port if necessary
+        "webRoot": "${workspaceFolder}"
+    }
+    ]
+}
