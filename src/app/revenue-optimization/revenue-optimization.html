@@ -1,0 +1,215 @@
+<div class="revenue-optimization">
+  <div class="revenue-optimization__header">
+    <h2 class="revenue-optimization__title">Revenue Optimization</h2>
+  </div>
+  @if(!loader){
+  <!-- High-Value Cargo Section -->
+  <div class="revenue-optimization__cargo-section">
+    <h3 class="revenue-optimization__subtitle">High-Value Cargo Requests</h3>
+    <div class="revenue-optimization__stats-container">
+      <div class="revenue-optimization__stats-left">
+        <div class="revenue-optimization__amount">
+          ${{revenueOptimizationData.revenue}}M
+        </div>
+        <div class="revenue-optimization__stats-details">
+          <div class="revenue-optimization__label">
+            Total Requests ({{revenueOptimizationData.totalRequest}})
+          </div>
+          <div class="revenue-optimization__sublabel">Potential Revenue</div>
+          <div class="revenue-optimization__extra-label">
+            +High-Value per Shipments
+          </div>
+        </div>
+      </div>
+      <div class="revenue-optimization__chart-wrapper">
+        <ejs-accumulationchart
+          id="revenue-chart"
+          [tooltip]="tooltipSettings"
+          height="140px"
+          width="140px"
+          [enableAnimation]="true"
+          [legendSettings]="legendSettings"
+        >
+          <e-accumulation-series-collection>
+            <e-accumulation-series
+              [dataSource]="revenueOptimizationData.revenueData"
+              xName="category"
+              yName="value"
+              type="Pie"
+              [palettes]="chartColors"
+              innerRadius="45%"
+              [explode]="false"
+            >
+            </e-accumulation-series>
+          </e-accumulation-series-collection>
+        </ejs-accumulationchart>
+        <div class="revenue-optimization__chart-center">
+          <span class="revenue-optimization__center-value"
+            >{{revenueOptimizationData.revenueOptimization}}%</span
+          >
+          <!-- <span class="revenue-optimization__center-label">Shom</span> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULD Availability Section -->
+  <div class="revenue-optimization__uld-section">
+    <div class="revenue-optimization__uld-header">
+      <h3 class="revenue-optimization__section-title">
+        ULD Availability for High-Value Requests
+      </h3>
+      <div class="revenue-optimization__chevron" (click)="toggleUldSection()">
+        ›
+      </div>
+    </div>
+
+    <div
+      class="revenue-optimization__uld-grid"
+      [class.collapsed]="!uldSectionExpanded"
+    >
+      <div
+        class="revenue-optimization__uld-item"
+        *ngFor="let uld of revenueOptimizationData.uldAvailability; let i = index"
+        (click)="selectUld(i)"
+        [class.selected]="selectedUldIndex === i"
+      >
+        <div class="revenue-optimization__uld-icon-wrapper">
+          <div
+            class="revenue-optimization__uld-icon"
+            [style.color]="uld.iconColor"
+          >
+            📦
+          </div>
+        </div>
+        <div class="revenue-optimization__uld-content">
+          <div class="revenue-optimization__uld-type">{{ uld.type }}</div>
+          <div class="revenue-optimization__uld-progress-wrapper">
+            <div class="revenue-optimization__uld-bar">
+              <div
+                class="revenue-optimization__uld-progress"
+                [style.width.%]="uld.percentage"
+                [style.background]="uld.color"
+              >
+                <div class="revenue-optimization__progress-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="revenue-optimization__uld-status">{{ uld.label }}</div>
+      </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <!-- <div class="revenue-optimization__filter-section">
+      <div class="revenue-optimization__filter-row">
+        <div class="revenue-optimization__filter-dark" (click)="toggleUldTypeFilter()">
+          <span>ULD Type Filter</span>
+          <span class="revenue-optimization__dropdown-arrow">⌄</span>
+        </div>
+        <div class="revenue-optimization__filter-light" (click)="toggleUldFilter()">
+          <span class="revenue-optimization__filter-dot">●</span>
+          <span>ULD Filter</span>
+          <span class="revenue-optimization__dropdown-arrow">⌄</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+    <!-- <form id="searchForm" #searchForm="ngForm" class="filter-form">
+      <div class="input-base mt-2 mb-2">
+        <select name="ddlProduct" [(ngModel)]="ddlProduct">
+          @for (fare of products; track fare.value; let i = $index) {
+          <option
+            class="px-1 mr-2"
+            [value]="fare?.value"
+            style="cursor: pointer"
+          >
+            {{ fare?.label }}
+          </option>
+          }
+        </select>
+      </div>
+    </form> -->
+
+    <!-- Cost/Revenue Analysis Section -->
+    <div class="revenue-optimization__analysis-section">
+      <div class="revenue-optimization__analysis-header">
+        <h3 class="revenue-optimization__section-title">
+          Cost/Revenue Analysis for New Shipments
+        </h3>
+      </div>
+
+      <div class="revenue-optimization__legend-section">
+        <div class="revenue-optimization__legend-row">
+          <div
+            class="revenue-optimization__legend-item"
+            (click)="toggleRevenueSeries()"
+          >
+            <div
+              class="revenue-optimization__legend-dot revenue-optimization__legend-dot--green"
+            ></div>
+            <span>Projected Revenue</span>
+          </div>
+          <div
+            class="revenue-optimization__legend-item"
+            (click)="toggleProfitSeries()"
+          >
+            <div
+              class="revenue-optimization__legend-dot revenue-optimization__legend-dot--yellow"
+            ></div>
+            <span>Avg. Profit per Shipment $1500</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="revenue-optimization__chart-section"
+        [class.collapsed]="!analysisSectionExpanded"
+      >
+        <div class="revenue-optimization__cost-header">
+          <span class="revenue-optimization__cost-title">Projected Costs</span>
+        </div>
+
+        <div class="revenue-optimization__area-chart-container">
+          <ejs-chart
+            id="area-chart"
+            height="120px"
+            [tooltip]="areaTooltipSettings"
+            [primaryXAxis]="primaryXAxis"
+            [primaryYAxis]="primaryYAxis"
+            [legendSettings]="areaLegendSettings"
+            background="transparent"
+          >
+            <e-series-collection>
+              <e-series
+                [dataSource]="revenueOptimizationData.areaRevenueData"
+                type="Area"
+                xName="x"
+                yName="y"
+                name="Projected Revenue"
+                fill="#10b981"
+                opacity="0.7"
+                [visible]="revenueSeriesVisible"
+              >
+              </e-series>
+              <e-series
+                [dataSource]="revenueOptimizationData.areaProfitData"
+                type="Area"
+                xName="x"
+                yName="y"
+                name="Avg. Profit"
+                fill="#f59e0b"
+                opacity="0.7"
+                [visible]="profitSeriesVisible"
+              >
+              </e-series>
+            </e-series-collection>
+          </ejs-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+  }@else {
+  <app-loader></app-loader>
+  }
+</div>

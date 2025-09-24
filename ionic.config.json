@@ -1,0 +1,7 @@
+{
+  "name": "QNeoULD",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

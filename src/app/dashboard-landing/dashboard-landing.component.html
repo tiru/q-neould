@@ -1,0 +1,83 @@
+<div class="dashboard-landing">
+  <div class="dashboard-landing__container">
+    <div class="dashboard-landing__stats-grid">
+      
+      <!-- Active Shipments Card -->
+      <div class="dashboard-landing__stat-card dashboard-landing__stat-card--shipments">
+        <div *ngIf="!loader; else loadingTemplate" class="dashboard-landing__card-content">
+          <div class="dashboard-landing__card-icon">📦</div>
+          <div class="dashboard-landing__stat-value">{{ dashboardData.totalShipments }}</div>
+          <div class="dashboard-landing__stat-label">Active Shipments</div>
+          <div class="dashboard-landing__stat-trend" 
+               [ngClass]="checkUpTrendClass(dashboardData.totalShipmentUpDown) ? 'dashboard-landing__stat-trend--up' : 'dashboard-landing__stat-trend--down'">
+            <span class="dashboard-landing__trend-icon">
+              {{ checkUpTrendClass(dashboardData.totalShipmentUpDown) ? '↗️' : '↘️' }}
+            </span>
+            <span class="dashboard-landing__trend-value">{{ dashboardData.totalShipmentUpDown }}</span>
+          </div>
+        </div>
+        <ng-template #loadingTemplate>
+          <app-loader></app-loader>
+        </ng-template>
+      </div>
+
+      <!-- On-Time Performance Card -->
+      <div class="dashboard-landing__stat-card dashboard-landing__stat-card--performance">
+        <div *ngIf="!loader; else loadingTemplate2" class="dashboard-landing__card-content">
+          <div class="dashboard-landing__card-icon">⏱️</div>
+          <div class="dashboard-landing__stat-value">{{ dashboardData.onTimePerformance }}%</div>
+          <div class="dashboard-landing__stat-label">On-Time Performance</div>
+          <div class="dashboard-landing__stat-trend"
+               [ngClass]="checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? 'dashboard-landing__stat-trend--up' : 'dashboard-landing__stat-trend--down'">
+            <span class="dashboard-landing__trend-icon">
+              {{ checkUpTrendClass(dashboardData.onTimePerformanceUpDown) ? '↗️' : '↘️' }}
+            </span>
+            <span class="dashboard-landing__trend-value">{{ dashboardData.onTimePerformanceUpDown }}</span>
+          </div>
+        </div>
+        <ng-template #loadingTemplate2>
+          <app-loader></app-loader>
+        </ng-template>
+      </div>
+
+      <!-- Monthly Revenue Card -->
+      <div class="dashboard-landing__stat-card dashboard-landing__stat-card--revenue">
+        <div *ngIf="!loader; else loadingTemplate3" class="dashboard-landing__card-content">
+          <div class="dashboard-landing__card-icon">💰</div>
+          <div class="dashboard-landing__stat-value">${{ dashboardData.revenue }}M</div>
+          <div class="dashboard-landing__stat-label">Monthly Revenue</div>
+          <div class="dashboard-landing__stat-trend"
+               [ngClass]="checkUpTrendClass(dashboardData.revenueUpDown) ? 'dashboard-landing__stat-trend--up' : 'dashboard-landing__stat-trend--down'">
+            <span class="dashboard-landing__trend-icon">
+              {{ checkUpTrendClass(dashboardData.revenueUpDown) ? '↗️' : '↘️' }}
+            </span>
+            <span class="dashboard-landing__trend-value">{{ dashboardData.revenueUpDown }}</span>
+          </div>
+        </div>
+        <ng-template #loadingTemplate3>
+          <app-loader></app-loader>
+        </ng-template>
+      </div>
+
+      <!-- Active Alerts Card -->
+      <div class="dashboard-landing__stat-card dashboard-landing__stat-card--alerts">
+        <div *ngIf="!loader; else loadingTemplate4" class="dashboard-landing__card-content">
+          <div class="dashboard-landing__card-icon">🚨</div>
+          <div class="dashboard-landing__stat-value">{{ dashboardData.activeAlerts }}</div>
+          <div class="dashboard-landing__stat-label">Active Alerts</div>
+          <div class="dashboard-landing__stat-trend"
+               [ngClass]="checkUpTrendClass(dashboardData.activeAlertsUpDown) ? 'dashboard-landing__stat-trend--up' : 'dashboard-landing__stat-trend--down'">
+            <span class="dashboard-landing__trend-icon">
+              {{ checkUpTrendClass(dashboardData.activeAlertsUpDown) ? '↗️' : '↘️' }}
+            </span>
+            <span class="dashboard-landing__trend-value">{{ dashboardData.activeAlertsUpDown }}</span>
+          </div>
+        </div>
+        <ng-template #loadingTemplate4>
+          <app-loader></app-loader>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</div>

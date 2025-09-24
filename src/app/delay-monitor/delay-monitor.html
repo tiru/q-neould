@@ -1,0 +1,197 @@
+<div class="delay-monitor">
+  <div class="delay-monitor__header">
+    <h2 class="delay-monitor__title">Delay Monitor</h2>
+  </div>
+  <div class="delay-monitor__tabs">
+    <button
+      *ngFor="let tab of tabs"
+      class="delay-monitor__tab"
+      [class.delay-monitor__tab--active]="activeTab === tab.id"
+      (click)="setActiveTab(tab.id)"
+    >
+      {{ tab.label }}
+    </button>
+  </div>
+
+  <div class="delay-monitor__content">
+    <!-- Overview Tab -->
+    @if(!loader){
+    <div *ngIf="activeTab === 'overview'" class="delay-monitor__tab-content">
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Real-time Delay Trends</h3>
+        <div class="delay-monitor__trend-info">
+          <span class="delay-monitor__trend-period">📈 past 24h</span>
+        </div>
+        <div class="delay-monitor__chart-container">
+          <ejs-chart
+            id="trend-chart"
+            [primaryXAxis]="primaryXAxis"
+            [primaryYAxis]="primaryYAxis"
+            [tooltip]="tooltipSettings"
+            height="180px"
+          >
+            <e-series-collection>
+              <e-series
+                [dataSource]="cargoDelayData.trendData"
+                type="Line"
+                xName="time"
+                yName="delays"
+                name="Delays"
+                fill="#ef4444"
+                width="2"
+              >
+              </e-series>
+              <e-series
+                [dataSource]="cargoDelayData.trendData"
+                type="Line"
+                xName="time"
+                yName="onTime"
+                name="On Time"
+                fill="#10b981"
+                width="2"
+              >
+              </e-series>
+            </e-series-collection>
+          </ejs-chart>
+        </div>
+      </div>
+
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Active Shipment Status</h3>
+        <div class="delay-monitor__status-grid">
+          <div
+            class="delay-monitor__status-card delay-monitor__status-card--on-time"
+          >
+            <div class="delay-monitor__status-number">156</div>
+            <div class="delay-monitor__status-label">On Schedule</div>
+          </div>
+          <div
+            class="delay-monitor__status-card delay-monitor__status-card--delayed"
+          >
+            <div class="delay-monitor__status-number">24</div>
+            <div class="delay-monitor__status-label">Delayed</div>
+          </div>
+          <div
+            class="delay-monitor__status-card delay-monitor__status-card--critical"
+          >
+            <div class="delay-monitor__status-number">3</div>
+            <div class="delay-monitor__status-label">Critical</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flights Tab -->
+
+    <div *ngIf="activeTab === 'flights'" class="delay-monitor__tab-content">
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Active Flight Delays</h3>
+        <div class="delay-monitor__flight-list">
+          <div
+            class="delay-monitor__flight-item"
+            *ngFor="let flight of cargoDelayData.activeFlights"
+          >
+            <div class="delay-monitor__flight-header">
+              <span class="delay-monitor__flight-number"
+                >{{ flight.number }}</span
+              >
+              <span
+                class="delay-monitor__delay-badge"
+                [class]="'delay-monitor__delay-badge--' + flight.severity"
+              >
+                {{ flight.status }}
+              </span>
+            </div>
+            <div class="delay-monitor__flight-route">{{ flight.route }}</div>
+            <div class="delay-monitor__flight-details">
+              <div class="delay-monitor__flight-detail">
+                <span class="delay-monitor__detail-label">Scheduled:</span>
+                <span class="delay-monitor__detail-value"
+                  >{{ flight.scheduled }}</span
+                >
+              </div>
+              <div class="delay-monitor__flight-detail">
+                <span class="delay-monitor__detail-label">Delay:</span>
+                <span
+                  class="delay-monitor__detail-value delay-monitor__detail-value--delay"
+                >
+                  +{{ flight.delay }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Global Problem Areas</h3>
+        <div class="delay-monitor__problem-areas">
+          <div
+            class="delay-monitor__problem-item"
+            *ngFor="let area of cargoDelayData.problemAreas"
+          >
+            <div class="delay-monitor__problem-location">
+              {{ area.location }}
+            </div>
+            <div
+              class="delay-monitor__problem-severity"
+              [class]="'delay-monitor__problem-severity--' + area.level"
+            >
+              {{ area.incidents }} incidents
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analysis Tab -->
+    <div *ngIf="activeTab === 'analysis'" class="delay-monitor__tab-content">
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Root Cause Analysis</h3>
+        <div class="delay-monitor__chart-container">
+          <ejs-accumulationchart
+            id="delay-analysis-chart"
+            [tooltip]="tooltipSettings"
+            height="200px"
+          >
+            <e-accumulation-series-collection>
+              <e-accumulation-series
+                [dataSource]="cargoDelayData.delayReasons"
+                xName="reason"
+                yName="percentage"
+                type="Pie"
+                [palettes]="analysisColors"
+              >
+              </e-accumulation-series>
+            </e-accumulation-series-collection>
+          </ejs-accumulationchart>
+        </div>
+      </div>
+
+      <div class="delay-monitor__section">
+        <h3 class="delay-monitor__section-title">Delay Impact Metrics</h3>
+        <div class="delay-monitor__metrics">
+          <div class="delay-monitor__metric">
+            <div class="delay-monitor__metric-label">Avg. Delay Duration</div>
+            <div class="delay-monitor__metric-value">45 min</div>
+          </div>
+          <div class="delay-monitor__metric">
+            <div class="delay-monitor__metric-label">Revenue Impact</div>
+            <div
+              class="delay-monitor__metric-value delay-monitor__metric-value--negative"
+            >
+              -$125K
+            </div>
+          </div>
+          <div class="delay-monitor__metric">
+            <div class="delay-monitor__metric-label">Customer Satisfaction</div>
+            <div class="delay-monitor__metric-value">78%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    } @else{
+    <app-loader></app-loader>
+    }
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="revenue-optimization">
+    <section class="revenue-optimization__card">
+      <div class="revenue-optimization__header">
+        <span class="revenue-optimization__title">Revenue Optimization</span>
+      </div>
+  
+      <!-- CARGO & DONUT -->
+      <div class="revenue-optimization__stats">
+        <div class="revenue-optimization__cargo">
+          <p class="revenue-optimization__label">High-Value Cargo Requests</p>
+          <p class="revenue-optimization__sub-label">Total Requests ({{requests}})</p>
+          <p class="revenue-optimization__main-value">{{potentialRevenue}}</p>
+          <p class="revenue-optimization__highlight">Potential Revenue</p>
+          <p class="revenue-optimization__extra">+High-Value Shiplops</p>
+        </div>
+        <div class="revenue-optimization__donut">
+          <ejs-accumulationchart
+            [width]="'100%'"
+            [height]="'100%'"
+            [background]="'transparent'"
+            [legendSettings]="{visible: false}">
+            <e-accumulation-series-collection>
+              <e-accumulation-series
+                [dataSource]="donutData"
+                xName="x"
+                yName="y"
+                type="Pie"
+                [innerRadius]="'65%'"
+                [radius]="'93%'"
+                [dataLabel]="{visible: false}">
+              </e-accumulation-series>
+            </e-accumulation-series-collection>
+          </ejs-accumulationchart>
+          <span class="revenue-optimization__donut-label">{{donut}}%</span>
+        </div>
+      </div>
+  
+      <!-- ULD AVAILABILITY -->
+      <div class="revenue-optimization__availability">
+        <div class="revenue-optimization__availability-title">
+          ULD Availability for High-Value Requests
+        </div>
+        <div *ngFor="let row of uldRows" class="revenue-optimization__availability-row">
+          <div class="revenue-optimization__uld-label">
+            <span class="revenue-optimization__uld-icon" [style.background]="row.color"></span>
+            <span>{{row.type}}</span>
+          </div>
+          <div class="revenue-optimization__progress">
+            <div class="revenue-optimization__progress-bar" [style.width.%]="(row.used / row.total) * 100" [style.background]="row.color"></div>
+          </div>
+          <span class="revenue-optimization__uld-status">{{row.status}}</span>
+        </div>
+      </div>
+  
+      <!-- FILTER BAR -->
+      <div class="revenue-optimization__filters">
+        <select class="revenue-optimization__filter-select">
+          <option selected>ULD Type Filter</option>
+        </select>
+        <button class="revenue-optimization__filter-btn">ULD Filter</button>
+      </div>
+  
+      <!-- COST/REVENUE ANALYSIS -->
+      <div class="revenue-optimization__analysis">
+        <div class="revenue-optimization__analysis-title">Cost/Revenue Analysis for New Shipments</div>
+        <div class="revenue-optimization__analysis-info">Avg. Profit per Shipment {{avgProfit}}</div>
+        <div class="revenue-optimization__chart-area">
+          <ejs-chart
+            [width]="'100%'"
+            [height]="'120px'"
+            [primaryXAxis]="primaryXAxis"
+            [primaryYAxis]="primaryYAxis"
+            [background]="'transparent'"
+            [legendSettings]="{visible: false}"
+            [chartArea]="{border: {width: 0}}">
+            <e-series-collection>
+              <e-series
+                [dataSource]="revenueData"
+                type="SplineArea"
+                xName="x"
+                yName="y"
+                name="Projected Revenue"
+                fill="rgba(16,185,129,0.3)"
+                [border]="{width:2,color:'#10b981'}"
+                [marker]="{visible:false}">
+              </e-series>
+              <e-series
+                [dataSource]="costData"
+                type="SplineArea"
+                xName="x"
+                yName="y"
+                name="Projected Costs"
+                fill="rgba(245,158,11,0.3)"
+                [border]="{width:2,color:'#f59e0b'}"
+                [marker]="{visible:false}">
+              </e-series>
+            </e-series-collection>
+          </ejs-chart>
+        </div>
+      </div>
+    </section>
+  </div>

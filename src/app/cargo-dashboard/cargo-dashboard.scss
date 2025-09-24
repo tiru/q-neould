@@ -1,0 +1,387 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.dashboard-container {
+    max-width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    flex-grow: 1;
+}
+
+.predictions-card {
+    background: rgba(255, 255, 255, .95);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, .2);
+    padding: 1.5rem;
+    z-index: 9999999999999999;
+}
+
+.predictions-card h2 {
+    margin: 0 0 1.5rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: .5rem
+}
+
+.predictions-card h2::before {
+    content: '📈';
+    font-size: 1.25rem
+}
+
+.chart-container {
+    margin-bottom: 1.5rem;
+    border-radius: .5rem;
+    overflow: hidden
+}
+
+.day-selector {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: .5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none
+}
+
+.day-selector::-webkit-scrollbar {
+    display: none
+}
+
+.day-btn {
+    background: #e5e7eb;
+    color: #6b7280;
+    border: none;
+    padding: .5rem 1rem;
+    border-radius: .75rem;
+    font-size: .875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .2s ease
+}
+
+.day-btn:hover {
+    background: #d1d5db
+}
+
+.day-btn.active {
+    background: #3b82f6;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, .3)
+}
+
+.cargo-dashboard {
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column
+}
+
+.cargo-dashboard__main {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center
+}
+
+.cargo-dashboard__stats-overview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns for mobile/tablet */
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.cargo-dashboard__stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px
+}
+
+.cargo-dashboard__stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
+    border-color: #e5e7eb
+}
+
+.cargo-dashboard__stat-card:active {
+    transform: translateY(-2px);
+    transition: transform .1s ease
+}
+
+.cargo-dashboard__stat-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, .1);
+    transform: translate(-50%, -50%);
+    transition: width .3s ease, height .3s ease
+}
+
+.cargo-dashboard__stat-card:active::after {
+    width: 200px;
+    height: 200px
+}
+
+.cargo-dashboard__card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1
+}
+
+.cargo-dashboard__card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 16px;
+    transition: transform .3s ease
+}
+
+.cargo-dashboard__stat-card--shipments .cargo-dashboard__card-icon {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe)
+}
+
+.cargo-dashboard__stat-card--performance .cargo-dashboard__card-icon {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0)
+}
+
+.cargo-dashboard__stat-card--revenue .cargo-dashboard__card-icon {
+    background: linear-gradient(135deg, #fef3c7, #fde68a)
+}
+
+.cargo-dashboard__stat-card--alerts .cargo-dashboard__card-icon {
+    background: linear-gradient(135deg, #fecaca, #fca5a5)
+}
+
+.cargo-dashboard__stat-card:hover .cargo-dashboard__card-icon {
+    transform: scale(1.1)
+}
+
+.cargo-dashboard__stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: .5rem;
+    line-height: 1
+}
+
+.cargo-dashboard__stat-label {
+    font-size: .9rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    font-weight: 500
+}
+
+.cargo-dashboard__stat-trend {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem .8rem;
+    border-radius: 20px;
+    font-size: .8rem;
+    font-weight: 600
+}
+
+.cargo-dashboard__stat-trend--up {
+    background: rgba(16, 185, 129, .1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, .2)
+}
+
+.cargo-dashboard__stat-trend--down {
+    background: rgba(239, 68, 68, .1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, .2)
+}
+
+.cargo-dashboard__trend-icon {
+    font-size: .9rem
+}
+
+@media (max-width:480px) {
+    .dashboard-container {
+        gap: 1rem;
+        padding: 0 .5rem
+    }
+
+    .predictions-card {
+        padding: 1rem
+    }
+
+    .cargo-dashboard__main {
+        padding: .5rem
+    }
+
+    .cargo-dashboard__stats-overview {
+        grid-template-columns: 1fr 1fr;
+        gap: .75rem;
+        grid-template-rows: repeat(2, 1fr)
+    }
+
+    .cargo-dashboard__stat-card {
+        padding: 1rem;
+        min-height: 140px
+    }
+
+    .cargo-dashboard__card-icon {
+        font-size: 1.8rem;
+        padding: .6rem;
+        margin-bottom: .6rem
+    }
+
+    .cargo-dashboard__stat-value {
+        font-size: 1.4rem
+    }
+
+    .cargo-dashboard__stat-label {
+        font-size: .75rem
+    }
+
+    .cargo-dashboard__stat-trend {
+        padding: .3rem .6rem;
+        font-size: .7rem
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width:481px) and (max-width:768px) {
+    .dashboard-container {
+        gap: 1.2rem;
+        padding: 0 .8rem
+    }
+
+    .predictions-card {
+        padding: 1.2rem
+    }
+
+    .cargo-dashboard__main {
+        padding: .8rem
+    }
+
+    .cargo-dashboard__stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem
+    }
+
+    .cargo-dashboard__stat-card {
+        padding: 1.3rem;
+        min-height: 180px
+    }
+
+    .cargo-dashboard__card-icon {
+        font-size: 2.2rem;
+        padding: .8rem
+    }
+
+    .cargo-dashboard__stat-value {
+        font-size: 1.8rem
+    }
+
+    .cargo-dashboard__stat-label {
+        font-size: .85rem
+    }
+}
+
+@media (min-width:769px) and (max-width:1024px) {
+    .dashboard-container {
+        gap: 1.5rem;
+        padding: 0 1rem
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 columns for desktop */
+    }
+
+    .cargo-dashboard__main {
+        padding: 1.5rem
+    }
+
+    .cargo-dashboard__stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        max-width: 800px
+    }
+
+    .cargo-dashboard__stat-card {
+        padding: 2rem;
+        min-height: 220px
+    }
+
+    .cargo-dashboard__card-icon {
+        font-size: 3rem
+    }
+}
+
+@media (min-width:1025px) {
+    .dashboard-container {
+        gap: 2rem;
+        padding: 0 1.5rem
+    }
+
+    .cargo-dashboard__main {
+        padding: 2rem
+    }
+
+    .cargo-dashboard__stats-overview {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        max-width: 1200px
+    }
+
+    .cargo-dashboard__stat-card {
+        padding: 2.5rem;
+        min-height: 250px
+    }
+
+    .cargo-dashboard__card-icon {
+        font-size: 3.5rem
+    }
+
+    .cargo-dashboard__stat-value {
+        font-size: 2.5rem
+    }
+
+    .cargo-dashboard__stat-label {
+        font-size: 1.1rem
+    }
+}

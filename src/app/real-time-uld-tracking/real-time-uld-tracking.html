@@ -1,0 +1,106 @@
+<div class="uld-tracking">
+  <div class="uld-tracking__header">
+    <h2 class="uld-tracking__title">Real-time ULD Tracking</h2>
+    <button class="uld-tracking__add-btn">+</button>
+  </div>
+
+  <div class="uld-tracking__content">
+    <div class="uld-tracking__map-section">
+      <div class="uld-tracking__map-container">
+        <div class="uld-tracking__map">
+          <div class="uld-tracking__route-line"></div>
+          <div
+            class="uld-tracking__aircraft"
+            [style.left.%]="aircraftPosition"
+            [style.animation-duration]="animationDuration"
+          >
+            ✈️
+          </div>
+          <div class="uld-tracking__waypoints">
+            <div class="uld-tracking__waypoint uld-tracking__waypoint--origin">
+              <div class="uld-tracking__waypoint-dot"></div>
+              <span class="uld-tracking__waypoint-label">LAX</span>
+            </div>
+            <div class="uld-tracking__waypoint uld-tracking__waypoint--destination">
+              <div class="uld-tracking__waypoint-dot"></div>
+              <span class="uld-tracking__waypoint-label">JFK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uld-tracking__flight-info">
+      <div class="uld-tracking__status-badge uld-tracking__status-badge--active">
+        🔄 Currently enroute
+      </div>
+      <div class="uld-tracking__route-info">
+        <div class="uld-tracking__route-title">Flight Route: LAX to JFK</div>
+        <div class="uld-tracking__route-details">
+          <div class="uld-tracking__detail-item">
+            <span class="uld-tracking__detail-label">Progress:</span>
+            <span class="uld-tracking__detail-value">{{ flightProgress }}%</span>
+          </div>
+          <div class="uld-tracking__detail-item">
+            <span class="uld-tracking__detail-label">ETA:</span>
+            <span class="uld-tracking__detail-value">{{ estimatedArrival }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uld-tracking__cargo-section">
+      <h3 class="uld-tracking__section-title">Active ULD Shipments</h3>
+      <div class="uld-tracking__cargo-list">
+        <div class="uld-tracking__cargo-item" *ngFor="let cargo of activeCargo">
+          <div class="uld-tracking__cargo-header">
+            <div class="uld-tracking__cargo-id">
+              <span class="uld-tracking__cargo-icon">📦</span>
+              <span class="uld-tracking__cargo-number">{{ cargo.id }}</span>
+            </div>
+            <div
+              class="uld-tracking__cargo-status"
+              [class]="'uld-tracking__cargo-status--' + cargo.status"
+            >
+              {{ cargo.statusLabel }}
+            </div>
+          </div>
+          <div class="uld-tracking__cargo-details">
+            <div class="uld-tracking__cargo-route">{{ cargo.route }}</div>
+            <div class="uld-tracking__cargo-progress">
+              <div class="uld-tracking__progress-bar">
+                <div class="uld-tracking__progress-fill" [style.width.%]="cargo.progress"></div>
+              </div>
+              <span class="uld-tracking__progress-text">{{ cargo.progress }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uld-tracking__alerts-section">
+      <h3 class="uld-tracking__section-title">Real-time Alerts</h3>
+      <div class="uld-tracking__alerts">
+        <div class="uld-tracking__alert" *ngFor="let alert of recentAlerts">
+          <div class="uld-tracking__alert-icon" [class]="'uld-tracking__alert-icon--' + alert.type">
+            {{ alert.icon }}
+          </div>
+          <div class="uld-tracking__alert-content">
+            <div class="uld-tracking__alert-title">{{ alert.title }}</div>
+            <div class="uld-tracking__alert-message">{{ alert.message }}</div>
+            <div class="uld-tracking__alert-time">{{ alert.time }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uld-tracking__quick-actions">
+      <button class="uld-tracking__action-btn uld-tracking__action-btn--primary">
+        Track New ULD
+      </button>
+      <button class="uld-tracking__action-btn uld-tracking__action-btn--secondary">
+        Generate Report
+      </button>
+    </div>
+  </div>
+</div>

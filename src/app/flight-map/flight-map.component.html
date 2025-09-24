@@ -1,0 +1,137 @@
+<div class="flight-map-container" [class.panel-open]="panelVisible">
+  <!-- Control Panel -->
+  <div class="control-panel" [class.visible]="panelVisible">
+    <h2>✈️ Cargo Flight Tracker</h2>
+    
+    <div class="flight-form">
+      <h3>Add New Route</h3>
+      <div class="form-row">
+        <input type="text" [(ngModel)]="newRoute.flightNumber" placeholder="Flight Number" class="form-input">
+        <input type="text" [(ngModel)]="newRoute.cargoWeight" placeholder="Cargo Weight" class="form-input">
+      </div>
+      
+      <div class="form-section">
+        <h4>Origin</h4>
+        <div class="location-inputs">
+          <input type="text" [(ngModel)]="newRoute.origin.name" placeholder="Origin City" class="form-input">
+          <input type="text" [(ngModel)]="newRoute.origin.code" placeholder="Code" class="form-input-small">
+        </div>
+        <div class="coord-inputs">
+          <input type="number" [(ngModel)]="newRoute.origin.lat" placeholder="Latitude" class="form-input" step="any">
+          <input type="number" [(ngModel)]="newRoute.origin.lng" placeholder="Longitude" class="form-input" step="any">
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h4>Destination</h4>
+        <div class="location-inputs">
+          <input type="text" [(ngModel)]="newRoute.destination.name" placeholder="Destination City" class="form-input">
+          <input type="text" [(ngModel)]="newRoute.destination.code" placeholder="Code" class="form-input-small">
+        </div>
+        <div class="coord-inputs">
+          <input type="number" [(ngModel)]="newRoute.destination.lat" placeholder="Latitude" class="form-input" step="any">
+          <input type="number" [(ngModel)]="newRoute.destination.lng" placeholder="Longitude" class="form-input" step="any">
+        </div>
+      </div>
+      
+      <select [(ngModel)]="newRoute.status" class="form-select">
+        <option value="scheduled">Scheduled</option>
+        <option value="in-flight">In Flight</option>
+        <option value="arrived">Arrived</option>
+        <option value="delayed">Delayed</option>
+      </select>
+      
+      <button (click)="addRoute()" class="add-button">Add Flight Route</button>
+      <button (click)="togglePanel()" class="toggle-panel-btn">
+        <span class="toggle-icon">{{panelVisible ? '✕' : '☰'}}</span>
+      </button>
+    </div>
+    
+    <!-- Flight List -->
+    <div class="flight-list">
+      <h3>Active Routes ({{flightRoutes.length}})</h3>
+      <div *ngFor="let route of flightRoutes" class="flight-item" 
+           [class.selected]="selectedRouteId === route.id"
+           (click)="selectRoute(route.id)">
+        <div class="flight-header">
+          <span class="flight-number">{{route.flightNumber}}</span>
+          <span class="status" [class]="route.status">{{route.status}}</span>
+        </div>
+        <div class="flight-details">
+          <span class="route-info">{{route.origin.code}} → {{route.destination.code}}</span>
+          <span class="cargo">{{route.cargoWeight}}</span>
+        </div>
+        <div *ngIf="route.status === 'in-flight' && route.progress" class="progress-bar">
+          <div class="progress-fill" [style.width.%]="route.progress"></div>
+          <span class="progress-text">{{route.progress}}%</span>
+        </div>
+        <button (click)="removeRoute(route.id); $event.stopPropagation()" class="remove-btn">×</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Map Container -->
+  <div class="map-container">
+    <div id="map" class="map"></div>
+    
+    <!-- Map Controls -->
+    <!-- <div class="map-controls">
+      <button (click)="fitToRoutes()" class="control-btn" title="Fit All Routes">
+        <span class="btn-icon">🗺️</span>
+        <span class="btn-text">Fit All</span>
+      </button>
+      <button (click)="toggleAnimation()" class="control-btn" title="Toggle Animation">
+        <span class="btn-icon">{{animationActive ? '⏸️' : '▶️'}}</span>
+        <span class="btn-text">{{animationActive ? 'Pause' : 'Animate'}}</span>
+      </button>
+      <button (click)="resetView()" class="control-btn" title="Reset View">
+        <span class="btn-icon">🏠</span>
+        <span class="btn-text">Reset</span>
+      </button>
+      <button (click)="addRandomFlight()" class="control-btn add-flight-btn" title="Add Random Flight">
+        <span class="btn-icon">✈️</span>
+        <span class="btn-text">Add Flight</span>
+      </button>
+    </div> -->
+    
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <div class="stat-item">
+        <div class="stat-value">{{getFlightsByStatus('in-flight').length}}</div>
+        <div class="stat-label">In Flight</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{getFlightsByStatus('scheduled').length}}</div>
+        <div class="stat-label">Scheduled</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{getFlightsByStatus('arrived').length}}</div>
+        <div class="stat-label">Arrived</div>
+      </div>
+    </div>
+    
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color airport"></div>
+        <span>Airports</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color route"></div>
+        <span>Routes</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color airplane"></div>
+        <span>Aircraft</span>
+      </div>
+    </div>
+    
+    <!-- Mobile Panel Toggle -->
+    <button class="mobile-panel-toggle" (click)="togglePanel()">
+      <span>{{panelVisible ? '✕' : '☰'}}</span>
+    </button>
+  </div>
+  
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" [class.visible]="panelVisible" (click)="togglePanel()"></div>
+</div>
