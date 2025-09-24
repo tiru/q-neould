@@ -91,13 +91,13 @@ export class CargoDashboard implements OnInit {
 
   private getDashboardData(): void {
     this.loader = true;
-    setTimeout(() => {
+    // setTimeout(() => {
       this.cargoService.getDashboardDetail().subscribe((data) => {
         console.log('data', data);
         this.dashboardData = data;
         this.loader = false;
       });
-    }, 1000);
+    // }, 1000);
   }
 
   private getChartData(): void {
