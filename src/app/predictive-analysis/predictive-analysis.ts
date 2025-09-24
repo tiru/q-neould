@@ -106,11 +106,9 @@ export class PredictiveAnalysis {
 
   ngOnInit(): void {
     this.loader = true;
-    setTimeout(() => {
-      this.cargoService.getPredictiveAnalysisDetail().subscribe((data) => {
-        this.predictiveAnalyticsData = data;
-        this.loader = false;
-      });
-    }, 1000);
+    this.cargoService.getPredictiveAnalysisDetail().subscribe((data) => {
+      this.predictiveAnalyticsData = data;
+      this.loader = false;
+    });
   }
 }

@@ -38,7 +38,7 @@ export class CargoShipmentService {
 
   getRevenueOptimizationDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/revenue-optimisation${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/revenue-optimisation`, {
         headers: this.headers,
       })
       .pipe(
@@ -106,7 +106,7 @@ export class CargoShipmentService {
 
   getCargoDelayMonitorDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/delay-monitor${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/delay-monitor`, {
         headers: this.headers,
       })
       .pipe(
@@ -226,7 +226,7 @@ export class CargoShipmentService {
 
   getPredictiveAnalysisDetail() {
     return this.http
-      .get<any>(`${this.prefixUrl}/delay-prediction${this.postfixUrl}`, {
+      .get<any>(`${this.prefixUrl}/delay-prediction`, {
         headers: this.headers,
       })
       .pipe(

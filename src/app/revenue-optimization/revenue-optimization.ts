@@ -87,13 +87,11 @@ export class RevenueOptimizationTestComponent {
   };
 
   ngOnInit(): void {
-    this.loader = true;
-    setTimeout(() => {
+    this.loader = true;   
     this.cargoService.getRevenueOptimizationDetail().subscribe((data) => {
       this.revenueOptimizationData = data;
       this.loader = false;
     });
-  }, 1000);
   }
 
   toggleUldSection(): void {
