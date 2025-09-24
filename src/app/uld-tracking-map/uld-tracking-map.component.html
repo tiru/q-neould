@@ -1,0 +1,174 @@
+<div class="uld-tracking-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="page-title">ULD Tracking System</h1>
+    
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="uldType">ULD Type:</label>
+        <select id="uldType" [(ngModel)]="selectedULDType" (change)="onULDTypeChange()" class="filter-select">
+          <option value="">Select ULD Type</option>
+          <option *ngFor="let type of uldTypes" [value]="type">{{type}}</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="uldNumber">ULD Number:</label>
+        <select id="uldNumber" [(ngModel)]="selectedULDNumber" (change)="onULDNumberChange()" class="filter-select">
+          <option value="">Select ULD Number</option>
+          <option *ngFor="let uld of filteredULDs" [value]="uld.value">{{uld.label}}</option>
+        </select>
+      </div>
+      
+      <button class="refresh-btn" (click)="refreshMap()">
+        <i class="refresh-icon">🔄</i>
+        Refresh Map
+      </button>
+    </div>
+  </div>
+
+  <!-- Map Container -->
+  <div class="map-container">
+    <div #mapElement class="map-element" id="map"></div>
+    
+    <!-- Legend -->
+    <div class="map-legend">
+      <h4>Legend</h4>
+      <div class="legend-item">
+        <span class="legend-dot green"></span>
+        <span>Good Status (G)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot red"></span>
+        <span>Risk Status (R)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Improved Info Panel Modal -->
+  <div class="modal-overlay" *ngIf="selectedSegment" (click)="closeInfoPanel()">
+    <div class="info-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>{{selectedSegment.data.ULD}}</h3>
+          <span class="route-badge">{{selectedSegment.from}} → {{selectedSegment.to}}</span>
+        </div>
+        <button class="close-btn" (click)="closeInfoPanel()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Improved Status Card -->
+        <div class="status-card" 
+             [class.good]="selectedSegment.data.USE_IND === 'G'" 
+             [class.risk]="selectedSegment.data.USE_IND === 'R'">
+          
+          <!-- Status Header -->
+          <div class="status-header">
+            <div class="status-indicator">
+              <div class="status-icon">
+                <svg *ngIf="selectedSegment.data.USE_IND === 'G'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg *ngIf="selectedSegment.data.USE_IND === 'R'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="status-info">
+                <span class="status-text">{{selectedSegment.data.USE_IND === 'G' ? 'Good Status' : 'Risk Alert'}}</span>
+                <span class="status-subtitle">Temperature Monitoring</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Temperature Display -->
+          <div class="temp-display">
+            <div class="temp-main">
+              <span class="temp-value">{{selectedSegment.data.CURRENT_TEMP}}°</span>
+              <span class="temp-unit">C</span>
+            </div>
+            <div class="temp-comparison" *ngIf="selectedSegment.data.CURRENT_TEMP !== selectedSegment.data.ACTUAL_TEMP">
+              <span class="temp-diff" 
+                    [class.positive]="selectedSegment.data.CURRENT_TEMP > selectedSegment.data.ACTUAL_TEMP"
+                    [class.negative]="selectedSegment.data.CURRENT_TEMP < selectedSegment.data.ACTUAL_TEMP">
+                {{selectedSegment.data.CURRENT_TEMP > selectedSegment.data.ACTUAL_TEMP ? '+' : ''}}{{(selectedSegment.data.CURRENT_TEMP - selectedSegment.data.ACTUAL_TEMP).toFixed(2)}}°
+              </span>
+              <span class="temp-target">Target: {{selectedSegment.data.ACTUAL_TEMP}}°C</span>
+            </div>
+          </div>
+
+          <!-- Temperature Range Indicator -->
+          <div class="temp-range">
+            <div class="range-bar">
+              <div class="range-fill" [style.width.%]="getTempPercentage()"></div>
+              <div class="range-marker" [style.left.%]="getTempPercentage()"></div>
+            </div>
+            <div class="range-labels">
+              <span class="range-min">Cold</span>
+              <span class="range-max">Hot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon">✈️</div>
+            <div class="info-details">
+              <span class="info-label">Carrier</span>
+              <span class="info-value">{{selectedSegment.data.CARRIER_CODE}} {{selectedSegment.data.CARRIER_NUMBER}}</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📦</div>
+            <div class="info-details">
+              <span class="info-label">Type</span>
+              <span class="info-value">{{selectedSegment.data.ULD_TYPE}}</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📅</div>
+            <div class="info-details">
+              <span class="info-label">Departure</span>
+              <span class="info-value">{{selectedSegment.data.DEP_DATE}}</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🌡️</div>
+            <div class="info-details">
+              <span class="info-label">Target Temp</span>
+              <span class="info-value">{{selectedSegment.data.ACTUAL_TEMP}}°C</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="additional-info">
+          <div class="info-item">
+            <span class="bullet">•</span>
+            <span>Movement: {{selectedSegment.data.MOVEMENT_DATE}}</span>
+          </div>
+          <div class="info-item" *ngIf="selectedSegment.data.BREACH_IND === 'Y'">
+            <span class="bullet warning">⚠️</span>
+            <span>Temperature Breach Detected</span>
+          </div>
+          <div class="info-item" *ngIf="selectedSegment.data.CRITICAL === 'Y'">
+            <span class="bullet critical">🔴</span>
+            <span>Critical Status</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

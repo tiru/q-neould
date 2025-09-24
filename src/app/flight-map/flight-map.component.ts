@@ -61,9 +61,9 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
     { name: 'Frankfurt', code: 'FRA', lat: 50.0379, lng: 8.5622 },
     { name: 'Paris CDG', code: 'CDG', lat: 49.0097, lng: 2.5479 },
     { name: 'Amsterdam', code: 'AMS', lat: 52.3105, lng: 4.7683 },
-    { name: 'Hong Kong', code: 'HKG', lat: 22.3080, lng: 113.9185 },
+    { name: 'Hong Kong', code: 'HKG', lat: 22.308, lng: 113.9185 },
     { name: 'Sydney', code: 'SYD', lat: -33.9399, lng: 151.1753 },
-    { name: 'Mumbai', code: 'BOM', lat: 19.0896, lng: 72.8656 }
+    { name: 'Mumbai', code: 'BOM', lat: 19.0896, lng: 72.8656 },
   ];
 
   newRoute: FlightRoute = {
@@ -107,7 +107,7 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     this.renderAllRoutes();
-    
+
     // Auto-start animation for demo
     // setTimeout(() => {
     //   this.toggleAnimation();
@@ -120,8 +120,18 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
         id: '1',
         flightNumber: 'CA001',
         cargoWeight: '15.5 tons',
-        origin: { name: 'New York JFK', code: 'JFK', lat: 40.6413, lng: -73.7781 },
-        destination: { name: 'London Heathrow', code: 'LHR', lat: 51.47, lng: -0.4543 },
+        origin: {
+          name: 'New York JFK',
+          code: 'JFK',
+          lat: 40.6413,
+          lng: -73.7781,
+        },
+        destination: {
+          name: 'London Heathrow',
+          code: 'LHR',
+          lat: 51.47,
+          lng: -0.4543,
+        },
         status: 'in-flight',
         progress: 42,
       },
@@ -129,8 +139,18 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
         id: '2',
         flightNumber: 'CA002',
         cargoWeight: '22.3 tons',
-        origin: { name: 'Tokyo Narita', code: 'NRT', lat: 35.772, lng: 140.3928 },
-        destination: { name: 'Los Angeles', code: 'LAX', lat: 33.9425, lng: -118.4081 },
+        origin: {
+          name: 'Tokyo Narita',
+          code: 'NRT',
+          lat: 35.772,
+          lng: 140.3928,
+        },
+        destination: {
+          name: 'Los Angeles',
+          code: 'LAX',
+          lat: 33.9425,
+          lng: -118.4081,
+        },
         status: 'in-flight',
         progress: 78,
       },
@@ -139,7 +159,12 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
         flightNumber: 'CA003',
         cargoWeight: '18.7 tons',
         origin: { name: 'Dubai', code: 'DXB', lat: 25.2532, lng: 55.3657 },
-        destination: { name: 'Mumbai', code: 'BOM', lat: 19.0896, lng: 72.8656 },
+        destination: {
+          name: 'Mumbai',
+          code: 'BOM',
+          lat: 19.0896,
+          lng: 72.8656,
+        },
         status: 'in-flight',
         progress: 28,
       },
@@ -148,7 +173,12 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
         flightNumber: 'CA004',
         cargoWeight: '31.2 tons',
         origin: { name: 'Frankfurt', code: 'FRA', lat: 50.0379, lng: 8.5622 },
-        destination: { name: 'Singapore', code: 'SIN', lat: 1.3644, lng: 103.9915 },
+        destination: {
+          name: 'Singapore',
+          code: 'SIN',
+          lat: 1.3644,
+          lng: 103.9915,
+        },
         status: 'in-flight',
         progress: 65,
       },
@@ -157,9 +187,14 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
         flightNumber: 'CA005',
         cargoWeight: '26.8 tons',
         origin: { name: 'Sydney', code: 'SYD', lat: -33.9399, lng: 151.1753 },
-        destination: { name: 'Hong Kong', code: 'HKG', lat: 22.3080, lng: 113.9185 },
+        destination: {
+          name: 'Hong Kong',
+          code: 'HKG',
+          lat: 22.308,
+          lng: 113.9185,
+        },
         status: 'scheduled',
-      }
+      },
     ];
   }
 
@@ -176,7 +211,7 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
     const airports = this.majorAirports;
     const origin = airports[Math.floor(Math.random() * airports.length)];
     let destination = airports[Math.floor(Math.random() * airports.length)];
-    
+
     // Ensure destination is different from origin
     while (destination.code === origin.code) {
       destination = airports[Math.floor(Math.random() * airports.length)];
@@ -184,9 +219,13 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const flightNumber = `CA${String(Math.floor(Math.random() * 999) + 100)}`;
     const cargoWeight = `${(Math.random() * 30 + 10).toFixed(1)} tons`;
-    const statuses: ('scheduled' | 'in-flight' | 'delayed')[] = ['scheduled', 'in-flight', 'delayed'];
+    const statuses: ('scheduled' | 'in-flight' | 'delayed')[] = [
+      'scheduled',
+      'in-flight',
+      'delayed',
+    ];
     const status = statuses[Math.floor(Math.random() * statuses.length)];
-    
+
     const newRoute: FlightRoute = {
       id: Date.now().toString(),
       flightNumber,
@@ -194,7 +233,8 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
       origin,
       destination,
       status,
-      progress: status === 'in-flight' ? Math.floor(Math.random() * 90) + 5 : undefined
+      progress:
+        status === 'in-flight' ? Math.floor(Math.random() * 90) + 5 : undefined,
     };
 
     this.flightRoutes.push(newRoute);
@@ -252,7 +292,7 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getFlightsByStatus(status: string): FlightRoute[] {
-    return this.flightRoutes.filter(route => route.status === status);
+    return this.flightRoutes.filter((route) => route.status === status);
   }
 
   private renderAllRoutes() {
@@ -285,7 +325,9 @@ export class FlightMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const marker = L.marker([airport.lat, airport.lng], { icon: airportIcon })
-      .bindPopup(`<strong>${airport.name} (${airport.code})</strong><br>Airport`)
+      .bindPopup(
+        `<strong>${airport.name} (${airport.code})</strong><br>Airport`
+      )
       .addTo(this.map);
 
     this.airportMarkers.set(markerId, marker);

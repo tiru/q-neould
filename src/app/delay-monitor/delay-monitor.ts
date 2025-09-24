@@ -78,12 +78,10 @@ export class DelayMonitor {
 
   ngOnInit(): void {
     this.loader = true;
-    setTimeout(() => {
       this.cargoService.getCargoDelayMonitorDetail().subscribe((data) => {
         this.cargoDelayData = data;
         this.loader = false;
       });
-    }, 1000);
   }
 
   setActiveTab(tabId: string): void {

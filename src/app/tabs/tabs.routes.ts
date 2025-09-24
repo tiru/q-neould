@@ -29,7 +29,7 @@ export const routes: Routes = [
       {
         path: 'flight-map',
         loadComponent: () =>
-          import('../flight-map/flight-map.component').then((m) => m.FlightMapComponent),
+          import('../uld-tracking-map/uld-tracking-map.component').then((m) => m.UldTrackingMapComponent),
       },
       {
         path: '',
