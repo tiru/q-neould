@@ -123,7 +123,7 @@ export class UldForecastChartComponent implements OnInit {
     visible: true,
     width: 8,
     height: 8,
-    fill: '#3b82f6',
+    fill: '#d79cb9',
     border: { width: 2, color: '#ffffff' },
     shape: 'Circle',
   };
