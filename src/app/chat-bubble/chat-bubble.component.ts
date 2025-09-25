@@ -7,12 +7,14 @@ import {
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface Message {
   id: string;
   text: string;
   type: 'user' | 'system';
   timestamp: Date;
+  htmlContent?: SafeHtml; // Added htmlContent property to store HTML per message
 }
 
 @Component({
@@ -27,14 +29,18 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   newMessage = '';
   isTyping = false;
-  isFullscreen = false; 
+  isFullscreen = false;
+
   private destroy$ = new Subject<void>();
   private apiUrl =
     'https://qneo-openai-eegqg5bah4gqgzg2.canadacentral-01.azurewebsites.net/callAzureOpenAIRestAPI';
-  constructor(private http: HttpClient) {}
+
+  // Removed the global htmlContent property as it's now per-message
+  
+  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    this.toggleChat();
+     this.isOpen = true;
     this.addSystemMessage(
       'Hello! How can I help you today? Ask me for a quote or any question!'
     );
@@ -68,12 +74,14 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
   }
 
-  private addSystemMessage(text: string): void {
+  // Modified to accept optional htmlContent parameter
+  private addSystemMessage(text: string, htmlContent?: SafeHtml): void {
     const message: Message = {
       id: this.generateId(),
       text,
       type: 'system',
       timestamp: new Date(),
+      htmlContent: htmlContent, // Store HTML content in the individual message
     };
     this.messages.push(message);
     this.scrollToBottom();
@@ -94,8 +102,16 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.isTyping = false;
-          const quote = response;
-          this.addSystemMessage(quote);
+          
+          // FIXED: Proper handling of HTML vs text responses
+          if (response.includes('<div')) {
+            // For HTML responses: sanitize HTML and pass it as htmlContent
+            const sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(response);
+            this.addSystemMessage('', sanitizedHtml); // Empty text, HTML content
+          } else {
+            // For plain text responses: just pass the text
+            this.addSystemMessage(response); // Text only, no HTML content
+          }
         },
         error: (error) => {
           this.isTyping = false;

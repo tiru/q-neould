@@ -1,5 +1,4 @@
 .chat-bubble {
-  position: fixed;
   bottom: 125px;
   right: 20px;
   z-index: 1000;
@@ -74,8 +73,12 @@
 .chat-bubble__window--open {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0) scale(1)
+  transform: translateY(0) scale(1);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
 }
+
 
 .chat-bubble__window--fullscreen {
   position: fixed !important;
@@ -451,5 +454,83 @@
 
   30% {
     transform: translateY(-10px)
+  }
+}
+
+.container {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.updated {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 1.2rem;
+}
+
+/* Stats layout */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-around;
+}
+
+.stat {
+  flex: 1 1 45%;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat .label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+  color: #555;
+}
+
+.stat .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Colors */
+.total .value {
+  color: #000;
+}
+
+.available .value {
+  color: #2ecc71;
+}
+
+/* green */
+.inuse .value {
+  color: #3498db;
+}
+
+/* blue */
+.maintenance .value {
+  color: #e74c3c;
+}
+
+/* red */
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .stat {
+    flex: 1 1 100%;
   }
 }
