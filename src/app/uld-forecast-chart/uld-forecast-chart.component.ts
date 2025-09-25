@@ -95,8 +95,7 @@ export class UldForecastChartComponent implements OnInit {
     labelStyle: {
       size: '11px',
       color: '#64748b',
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily: '"Open Sans", sans-serif',
       fontWeight: '500',
     },
     lineStyle: { width: 1, color: '#e2e8f0' },
@@ -111,8 +110,7 @@ export class UldForecastChartComponent implements OnInit {
     labelStyle: {
       size: '11px',
       color: '#64748b',
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily: '"Open Sans", sans-serif',
       fontWeight: '500',
     },
     lineStyle: { width: 1, color: '#e2e8f0' },
@@ -136,8 +134,6 @@ export class UldForecastChartComponent implements OnInit {
       '<b>${point.x}</b><br/>ULDs: <b>${point.y}</b><br/><i>Click for details</i>',
     textStyle: {
       size: '12px',
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       color: '#ffffff',
     },
     fill: '#1e293b',
@@ -165,10 +161,10 @@ export class UldForecastChartComponent implements OnInit {
   };
 
   public chartMargin: Object = {
-    left: 60,
-    right: 30,
-    top: 30,
-    bottom: 60,
+    left: 20,
+    right: 20,
+    top: 20,
+    bottom: 20,
   };
 
   public chartArea: Object = {

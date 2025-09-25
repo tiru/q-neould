@@ -34,6 +34,7 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.toggleChat();
     this.addSystemMessage(
       'Hello! How can I help you today? Ask me for a quote or any question!'
     );
