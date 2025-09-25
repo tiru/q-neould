@@ -37,7 +37,9 @@
     font-size: 1rem;
     outline: none;
     transition: all .3s ease;
-    box-sizing: border-box
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
 }
 
 .search-input:focus {
@@ -102,6 +104,7 @@
     border-radius: 12px;
     padding: .675rem;
     cursor: pointer;
+    color: #333;
     transition: all .2s ease
 }
 
@@ -114,7 +117,9 @@
 .tracking-details {
     min-height: 100vh;
     background: #f5f7fa;
-    font-family: 'Segoe UI', sans-serif
+    font-family: 'Segoe UI', sans-serif;
+    height: calc(100vh - 100px);
+    overflow: auto;
 }
 
 .details-header {
@@ -150,13 +155,16 @@
 .uld-info h2 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 600
+    font-weight: 600;
+    color: #333;
+    
 }
 
 .uld-info p {
     margin: .25rem 0 0 0;
     opacity: .9;
-    font-size: .9rem
+    font-size: .9rem;
+    color:#333;
 }
 
 .status-cards {

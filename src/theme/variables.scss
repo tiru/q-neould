@@ -1,2 +1,5 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+ion-tab-bar {
+  padding-bottom: env(safe-area-inset-bottom);
+}

@@ -58,6 +58,8 @@ app-revenue-optimization-test{
     overflow: auto !important;
 }
 
+
+
 .btn_primary{
 border:0.1rem solid var(--primary-color);
 background:var(--primary-color);
@@ -105,19 +107,3 @@ html,body{
     font-size: 14px !important;
 }
 
-:root {
-  --ion-safe-area-top:    env(safe-area-inset-top, 0px);
-  --ion-safe-area-right:  env(safe-area-inset-right, 0px);
-  --ion-safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --ion-safe-area-left:   env(safe-area-inset-left, 0px);
-}
-
-/* Utility if you have custom fixed elements */
-.with-safe-areas {
-  padding-top: var(--ion-safe-area-top);
-  padding-bottom: var(--ion-safe-area-bottom);
-}
-ion-header, ion-footer {
-  padding-top: var(--ion-safe-area-top);
-  padding-bottom: var(--ion-safe-area-bottom);
-}
