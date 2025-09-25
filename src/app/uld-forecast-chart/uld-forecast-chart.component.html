@@ -21,7 +21,7 @@
           </div>-->
           
           <div class="filter-group">
-            <label>Origin:</label>
+            <label>Airport:</label>
             <select [(ngModel)]="selectedOrigin" (change)="applyFilters()">
               <option *ngFor="let origin of availableOrigins" [value]="origin">{{origin}}</option>
             </select>
