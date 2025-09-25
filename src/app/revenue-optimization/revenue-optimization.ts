@@ -15,7 +15,36 @@ import { CargoShipmentService } from '../service/cargo-shipment.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../shared/loader/loader.component';
-
+export interface Telemetry {
+ temperature: {
+   value: number;
+   unit: string;
+   range: { min: number; max: number };
+   status: string;
+ };
+ batteryLevel: {
+   value: number;
+   unit: string;
+   status: {
+     text: string;
+     remainingTimeEstimateHours: number;
+   };
+ };
+ signalStrength: {
+   value: string;
+   status: string;
+   lastSyncMinutesAgo: string;
+ };
+ currentLocation: {
+   value: string;
+   description: string;
+   details: {
+     gate: string;
+     locationType: string;
+   };
+   updatedMinutesAgo: string;
+ };
+}
 @Component({
   selector: 'app-revenue-optimization-test',
   standalone: true,
@@ -34,92 +63,51 @@ import { LoaderComponent } from '../../shared/loader/loader.component';
   styleUrl: './revenue-optimization.scss',
 })
 export class RevenueOptimizationTestComponent {
-  uldSectionExpanded = true;
-  analysisSectionExpanded = true;
-  selectedUldIndex = -1;
-  revenueSeriesVisible = true;
-  profitSeriesVisible = true;
-  loader = false;
-  revenueOptimizationData: any;
-  ddlProduct = 'uld-filter';
-  products = [
-    { label: 'ULD Filter', value: 'uld-filter' },
-    { label: 'AKE', value: 'ake' }
-  ];
-  constructor(public cargoService: CargoShipmentService) {}
+   telemetryData: Telemetry = {
+   temperature: {
+     value: 4.8,
+     unit: '°C',
+     range: { min: -5, max: 25 },
+     status: 'Optimal'
+   },
+   batteryLevel: {
+     value: 94,
+     unit: '%',
+     status: {
+       text: 'Good',
+       remainingTimeEstimateHours: 9
+     }
+   },
+   signalStrength: {
+     value: 'Excellent',
+     status: 'Good',
+     lastSyncMinutesAgo: '8'
+   },
+   currentLocation: {
+     value: 'LHR T4',
+     description: 'London Heathrow Terminal 4',
+     details: {
+       gate: '12A',
+       locationType: 'Cargo Hold'
+     },
+     updatedMinutesAgo: '3'
+   }
+ };
 
-  public chartColors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
+ 
 
-  public tooltipSettings = {
-    enable: true,
-    format: '${point.x}: ${point.y}%',
-  };
-
-
-  public legendSettings = {
-    visible: false,
-  };
-
-  public primaryXAxis = {
-    valueType: 'Category',
-    labelStyle: { color: '#94a3b8', size: '10px' },
-    lineStyle: { width: 0 },
-    majorTickLines: { width: 0 },
-    minorTickLines: { width: 0 },
-  };
-
-  public primaryYAxis = {
-    labelStyle: { color: '#94a3b8', size: '10px' },
-    lineStyle: { width: 0 },
-    majorTickLines: { width: 0 },
-    minorTickLines: { width: 0 },
-    majorGridLines: { width: 0 },
-  };
-
-  public areaTooltipSettings = {
-    enable: true,
-    shared: false,
-    format: '${series.name}: ${point.y}',
-  };
-
-  public areaLegendSettings = {
-    visible: false,
-  };
-
-  ngOnInit(): void {
-    this.loader = true;   
-    this.cargoService.getRevenueOptimizationDetail().subscribe((data) => {
-      this.revenueOptimizationData = data;
-      this.loader = false;
-    });
-  }
-
-  toggleUldSection(): void {
-    this.uldSectionExpanded = !this.uldSectionExpanded;
-  }
-
-  toggleAnalysisSection(): void {
-    this.analysisSectionExpanded = !this.analysisSectionExpanded;
-  }
-
-  selectUld(index: number): void {
-    this.selectedUldIndex = this.selectedUldIndex === index ? -1 : index;
-  }
-
-  toggleUldTypeFilter(): void {
-    console.log('ULD Type Filter clicked');
-  }
-
-  toggleUldFilter(): void {
-    // Implement filter logic here
-    console.log('ULD Filter clicked');
-  }
-
-  toggleRevenueSeries(): void {
-    this.revenueSeriesVisible = !this.revenueSeriesVisible;
-  }
-
-  toggleProfitSeries(): void {
-    this.profitSeriesVisible = !this.profitSeriesVisible;
-  }
+ journdata = {
+   tempCompliance: '97.1%',
+   systemUptime: '99.8%',
+   gpsAccuracy: '98.9%',
+   events: '19/20'
+ };
+isTrackenabled: boolean = false;
+trackfunc() {
+  this.isTrackenabled = true;
 }
+backtrackfunc() {
+  this.isTrackenabled = false;
+}
+}
+

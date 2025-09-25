@@ -17,9 +17,9 @@ export const routes: Routes = [
           import('../revenue-optimization/revenue-optimization').then((m) => m.RevenueOptimizationTestComponent),
       },
       {
-        path: 'delay-monitor',
+        path: 'aiChat',
         loadComponent: () =>
-          import('../delay-monitor/delay-monitor').then((m) => m.DelayMonitor),
+          import('../chat-bubble/chat-bubble.component').then((m) => m.ChatBubbleComponent),
       },
       {
         path: 'predictive-analysis',
