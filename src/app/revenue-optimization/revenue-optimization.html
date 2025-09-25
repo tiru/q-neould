@@ -67,8 +67,27 @@
        </div>
      </div>
    </div>
-   <div class="trackrow3"> </div>
-   <div class="trackrow4">
+   <div class="trackrow3">
+     <div class="segmented" role="tablist" aria-label="View switch">
+       <button
+          id="timeline-tab"
+          type="button"
+          role="tab"
+          [class.active]="view === 'timeline'"
+          (click)="view = 'timeline'">
+          Activity Timeline
+       </button>
+       <button
+          id="journey-tab"
+          type="button"
+          role="tab"
+          [class.active]="view === 'journey'"
+          (click)="view = 'journey'">
+          Journey Map
+       </button>
+       </div>
+   </div>
+   <div class="trackrow4" *ngIf="view === 'timeline'">
      <div class="journeryoverwrap">
        <h6>Journey Overview</h6>
        <ul>
@@ -79,5 +98,59 @@
        </ul>
      </div>
    </div>
-   <div class="trackrow5"> </div>
+   <div class="trackrow4"  *ngIf="view === 'timeline'">
+     <div class="activitylogwrap">
+       <div class="actrow1"><h6>Activity Log</h6></div>
+       <div class="actrow2">
+         <div class="filterwrap">
+           <span [class.active]="selectedTypes().size === 0"
+           (click)="toggleType('All')">
+           All ({{ countEvent('All') }})
+           </span>
+           <span *ngFor="let t of eventTypes"
+           [class.active]="selectedTypes().has(t)"
+           (click)="toggleType(t)">
+           {{ t }} ({{ countEvent(t) }})
+           </span>
+         </div>
+       </div>
+       <div class="actrow4"> </div>
+         <div class="activitylogwrapp">
+         <div *ngFor="let log of filtered()" class="activitylog {{log.severity}}">
+           <div class="actr1c1">
+             <span class="titletxt">{{ log.eventType }} | {{ log.location }}</span>
+             <span>{{ log.notes }}</span>
+           </div>
+           <div class="actr1c2">
+             <span class="severity" [class]="log.severity">{{ log.severity }}</span>
+             <span class="timelog">{{ toLocalTime(log.timestamp) }}</span>
+           </div>
+         <!-- <div class="time">{{ toLocalTime(log.timestamp) }}</div>
+         <div class="event">{{ log.eventType }}</div>
+         <div class="severity" [class]="log.severity">{{ log.severity }}</div>
+         <div class="loc">{{ log.location }}</div>
+         <div class="notes">{{ log.notes }}</div> -->
+         </div>
+         <div *ngIf="filtered().length === 0" class="empty">
+          No logs found for current filters.
+         </div>
+       </div>
+     </div>
+   </div>
+   <div class="trackrow5"  *ngIf="view === 'journey'">
+    <div class="map-container">
+      <div #mapElement class="map-element" id="map"></div>
+      <div class="map-legend">
+        <h4>Legend</h4>
+        <div class="legend-item">
+          <span class="legend-dot green"></span>
+          <span>Good Status (G)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot red"></span>
+          <span>Risk Status (R)</span>
+        </div>
+      </div>
+    </div>
+   </div>
  </div>
