@@ -18,7 +18,7 @@
     font-weight: 300;
     margin: 0 0 2rem 0;
     color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text
@@ -43,7 +43,7 @@
 }
 
 .search-input:focus {
-    border-color: #667eea;
+    border-color: #64043C;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, .1)
 }
 
@@ -51,7 +51,7 @@
     margin-top: 1rem;
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #64043C 0%, #64043C 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -88,7 +88,7 @@
 }
 
 .available-count {
-    color: #667eea;
+    color: #64043C;
     font-weight: 600
 }
 
@@ -111,7 +111,7 @@
 .uld-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, .15);
-    border-color: #667eea
+    border-color: #64043C
 }
 
 .tracking-details {
@@ -802,7 +802,7 @@
 }
 
 .primary-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
     color: white
 }
 

@@ -15,7 +15,7 @@
 .chat-bubble__button {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@
 
 .chat-bubble__header {
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
   color: white;
   border-radius: 12px 12px 0 0;
   display: flex;
@@ -206,7 +206,7 @@
 }
 
 .chat-bubble__message--user {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
   color: white;
   margin-left: auto
 }
@@ -376,7 +376,7 @@
 }
 
 .chat-bubble__input:focus {
-  border-color: #667eea
+  border-color: #64043C
 }
 
 .chat-bubble__input::placeholder {
@@ -391,7 +391,7 @@
 .chat-bubble__send-button {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #64043C 0%, #764ba2 100%);
   border: none;
   border-radius: 50%;
   color: white;

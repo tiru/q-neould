@@ -279,7 +279,7 @@ export class CargoDashboard implements OnInit {
     visible: true,
     height: 8,
     width: 8,
-    fill: '#667eea',
+    fill: '#64043C',
     border: { width: 2, color: '#ffffff' },
   };
 

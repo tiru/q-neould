@@ -87,7 +87,7 @@
    display: flex;
    align-items: center;
    gap: .5rem;
-   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+   background: linear-gradient(135deg, white, #1d4ed8);
    color: white;
    padding: .5rem 1rem;
    border-radius: 20px;
@@ -138,7 +138,7 @@
    justify-content: space-between;
    align-items: center;
    padding: 1.5rem;
-   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+   background: linear-gradient(135deg, hsl(325, 44%, 38%) 0%, #8b3668 100%);
    color: white;
    border-radius: 16px 16px 0 0;
    position: sticky;
@@ -213,7 +213,7 @@
    left: 1.5rem;
    right: 1.5rem;
    height: 2px;
-   background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+   background: linear-gradient(90deg, white, #1d4ed8);
    border-radius: 1px
  }
 
@@ -261,7 +261,7 @@
  }
 
  .value.highlight {
-   color: #3b82f6;
+   color: white;
    font-size: 1.2rem
  }
 
@@ -287,10 +287,10 @@
  }
 
  .uld-item.active {
-   border-color: #3b82f6;
-   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+   border-color: hsl(326, 39%, 59%);
+   background: lightpink;
    transform: translateY(-3px) scale(1.02);
-   box-shadow: 0 8px 25px rgba(59, 130, 246, .3)
+   box-shadow: 0 8px 25px #bf6d9c;
  }
 
  .uld-item.active::before {
@@ -327,7 +327,7 @@
  }
 
  .uld-value.has-value {
-   color: #3b82f6
+   color: black;
  }
 
  .cargo-grid {

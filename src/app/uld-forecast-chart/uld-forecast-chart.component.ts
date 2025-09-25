@@ -168,7 +168,7 @@ export class UldForecastChartComponent implements OnInit {
   };
 
   public chartArea: Object = {
-    border: { width: 0 },
+    border: { width: 0 , color: "#64043C", fill: "#64043C"},
     background: '#ffffff',
   };
 

@@ -2,7 +2,7 @@
 ion-tab-bar {
   --background: #ffffff !important;          /* background color */
   --color: #8c8c8c;              /* default text/icon color */
-  --color-selected: var(--primary-color); /* active tab color */
+  --color-selected: var(#64043C); /* active tab color */
   --border: 1px solid #fff;      /* top border of tab bar */
   padding-bottom: env(safe-area-inset-bottom);
   padding-bottom:2rem;

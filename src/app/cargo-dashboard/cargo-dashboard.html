@@ -11,6 +11,8 @@
     <ion-col class="ion-no-padding ion-padding-horizontal ion-padding-bottom">
       <div class="cardgenericwrap">
         <div class="titlepnl">ULD Predition (Next 7 Days)</div>
+
+        @if(forecastChartData?.length && !loader){
         <div class="contentpnl">
           <!-- <div class="datelispnl ion-margin-bottom">
              @for (item of dateForFilter; track item; let i = $index) {
@@ -20,7 +22,7 @@
                 </ul>
               }
           </div> -->
-          @if(forecastChartData?.length && !loader){
+
           <div class="chartpnl">
             <app-uld-forecast-chart
               [chartData]="forecastChartData"
@@ -72,7 +74,7 @@
                           yName="count"
                           name="ULD Count"
                           [marker]="marker"
-                          fill="#667eea"
+                          fill="#64043C"
                           width="3"
                         >
                         </e-series>
@@ -90,10 +92,10 @@
             </main>
           </div> -->
           </div>
-          } @else{
-          <app-loader></app-loader>
-          }
         </div>
+        } @else{
+        <app-loader></app-loader>
+        }
       </div>
     </ion-col>
   </ion-row>
@@ -138,7 +140,7 @@
                 yName="count"
                 name="ULD Count"
                 [marker]="marker"
-                fill="#667eea"
+                fill="#64043C"
                 width="3"
               >
               </e-series>
