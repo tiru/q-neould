@@ -157,14 +157,14 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: #333;
-    
+
 }
 
 .uld-info p {
     margin: .25rem 0 0 0;
     opacity: .9;
     font-size: .9rem;
-    color:#333;
+    color: #333;
 }
 
 .status-cards {
@@ -186,7 +186,7 @@
     align-items: center;
     gap: 1rem;
     transition: all .3s ease;
-    width: 100%;
+    width: 46%;
 }
 
 .status-card:hover {
@@ -353,9 +353,9 @@
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: gray;
     color: white;
-    padding: 2rem
+    padding: 0.5rem;
 }
 
 .modal-header-content {
@@ -365,7 +365,9 @@
 }
 
 .modal-title-section {
-    flex: 1
+    flex: 1;
+    display: flex;
+    gap: 1rem;
 }
 
 .modal-title {
@@ -839,7 +841,7 @@
     }
 
     .modal-header {
-        padding: 1.5rem
+        padding: 0.5rem;
     }
 
     .modal-body {
