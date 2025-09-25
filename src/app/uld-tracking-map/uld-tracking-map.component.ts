@@ -1,14 +1,21 @@
+import { CommonModule } from '@angular/common';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import {
   Component,
+  ElementRef,
   OnInit,
+  ViewChild,
   AfterViewInit,
   OnDestroy,
-  ViewChild,
-  ElementRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
+import { catchError, map, throwError } from 'rxjs';
+import { LoaderComponent } from 'src/shared/loader/loader.component';
 
 interface ULDData {
   MOVEMENT_DATE: string;
@@ -33,6 +40,8 @@ interface ULDData {
   DEP_LON: number;
   ARR_LAT: number;
   ARR_LON: number;
+  BATTERY: number;
+  SIGNAL: number;
 }
 
 interface RouteSegment {
@@ -51,176 +60,47 @@ interface ULDOption {
 }
 
 @Component({
-  selector: 'app-uld-tracking-map',
-  templateUrl: './uld-tracking-map.component.html',
+  selector: 'app-uld-tracking',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, LoaderComponent],
+  templateUrl: './uld-tracking-map.component.html',
   styleUrls: ['./uld-tracking-map.component.scss'],
 })
 export class UldTrackingMapComponent implements OnInit {
   @ViewChild('mapElement') mapElement!: ElementRef;
 
+  currentView: 'search' | 'details' = 'search';
+  searchULD: string = '';
+  currentULD: string = '';
+  currentULDType: string = '';
+  currentLocation: string = '';
+  currentULDData: ULDData | null = null;
+  loader = false;
+
   private map!: L.Map;
   private currentPolylines: L.Polyline[] = [];
   private currentMarkers: any[] = [];
-
-  // Sample data with latitude and longitude included
-  private sampleData: ULDData[] = [
-    {
-      MOVEMENT_DATE: '24-Sep-25',
-      ULD: 'AAA012300N',
-      CARRIER_CODE: 'AA',
-      CARRIER_NUMBER: '1234',
-      ROUTE: 'LHR-DOH-MAA',
-      DEP: 'LHR',
-      ARR: 'DOH',
-      DEP_DATE: '24-Sep-25',
-      ULD_TYPE: 'CONTAINER',
-      LEASE: 'Y',
-      DAMAGED: 'N',
-      IDLE: 'N',
-      ACTUAL_TEMP: 77.94,
-      CURRENT_TEMP: 77.94,
-      BREACH_IND: 'N',
-      ALERT: 'N',
-      CRITICAL: 'Y',
-      USE_IND: 'G',
-      DEP_LAT: 51.47,
-      DEP_LON: -0.4543,
-      ARR_LAT: 25.2732,
-      ARR_LON: 51.608,
-    },
-    {
-      MOVEMENT_DATE: '25-Sep-25',
-      ULD: 'AAA012300N',
-      CARRIER_CODE: 'AA',
-      CARRIER_NUMBER: '4567',
-      ROUTE: 'LHR-DOH-MAA',
-      DEP: 'DOH',
-      ARR: 'MAA',
-      DEP_DATE: '25-Sep-25',
-      ULD_TYPE: 'CONTAINER',
-      LEASE: 'Y',
-      DAMAGED: 'N',
-      IDLE: 'N',
-      ACTUAL_TEMP: 77.94,
-      CURRENT_TEMP: 71.94,
-      BREACH_IND: 'N',
-      ALERT: 'N',
-      CRITICAL: 'Y',
-      USE_IND: 'G',
-      DEP_LAT: 25.2732,
-      DEP_LON: 51.608,
-      ARR_LAT: 12.9941,
-      ARR_LON: 80.1709,
-    },
-    {
-      MOVEMENT_DATE: '24-Sep-25',
-      ULD: 'QKE620000N',
-      CARRIER_CODE: 'AB',
-      CARRIER_NUMBER: '8735',
-      ROUTE: 'STN-CDG-BEY-DOH',
-      DEP: 'STN',
-      ARR: 'CDG',
-      DEP_DATE: '24-Sep-25',
-      ULD_TYPE: 'CONTAINER',
-      LEASE: 'Y',
-      DAMAGED: 'N',
-      IDLE: 'N',
-      ACTUAL_TEMP: 91.26,
-      CURRENT_TEMP: 91.26,
-      BREACH_IND: 'N',
-      ALERT: 'N',
-      CRITICAL: 'Y',
-      USE_IND: 'G',
-      DEP_LAT: 51.885,
-      DEP_LON: 0.235,
-      ARR_LAT: 49.0097,
-      ARR_LON: 2.5479,
-    },
-    {
-      MOVEMENT_DATE: '25-Sep-25',
-      ULD: 'QKE620000N',
-      CARRIER_CODE: 'QN',
-      CARRIER_NUMBER: '8654',
-      ROUTE: 'STN-CDG-BEY-DOH',
-      DEP: 'CDG',
-      ARR: 'BEY',
-      DEP_DATE: '25-Sep-25',
-      ULD_TYPE: 'CONTAINER',
-      LEASE: 'N',
-      DAMAGED: 'N',
-      IDLE: 'N',
-      ACTUAL_TEMP: 91.26,
-      CURRENT_TEMP: 90.19,
-      BREACH_IND: 'Y',
-      ALERT: 'Y',
-      CRITICAL: 'Y',
-      USE_IND: 'R',
-      DEP_LAT: 49.0097,
-      DEP_LON: 2.5479,
-      ARR_LAT: 33.8208,
-      ARR_LON: 35.4883,
-    },
-    {
-      MOVEMENT_DATE: '26-Sep-25',
-      ULD: 'QKE620000N',
-      CARRIER_CODE: 'QN',
-      CARRIER_NUMBER: '8654',
-      ROUTE: 'STN-CDG-BEY-DOH',
-      DEP: 'BEY',
-      ARR: 'DOH',
-      DEP_DATE: '26-Sep-25',
-      ULD_TYPE: 'CONTAINER',
-      LEASE: 'N',
-      DAMAGED: 'N',
-      IDLE: 'N',
-      ACTUAL_TEMP: 91.26,
-      CURRENT_TEMP: 91.26,
-      BREACH_IND: 'N',
-      ALERT: 'N',
-      CRITICAL: 'Y',
-      USE_IND: 'G',
-      DEP_LAT: 33.8208,
-      DEP_LON: 35.4883,
-      ARR_LAT: 25.2732,
-      ARR_LON: 51.608,
-    },
-  ];
-
-  selectedULDType: string = '';
-  selectedULDNumber: string = '';
   selectedSegment: RouteSegment | null = null;
 
-  uldTypes: string[] = [
-    'CONTAINER',
-    'PALLET',
-    'IGLOO',
-    'BOX',
-    'TANK',
-    'REEFER',
-  ];
-  filteredULDs: ULDOption[] = [];
+  prefixURL =
+    'https://azurespringbootmicroservice-duczecgzdze8a9cf.swedencentral-01.azurewebsites.net/qneould/uld-tracking/api/v1';
+  private sampleData: ULDData[] = [];
 
-  private allULDs: ULDOption[] = [
-    { value: 'AAA012300N', label: 'AAA012300N - Container', type: 'CONTAINER' },
-    { value: 'QKE620000N', label: 'QKE620000N - Container', type: 'CONTAINER' },
-    { value: 'PKE123456N', label: 'PKE123456N - Pallet', type: 'PALLET' },
-    { value: 'IGU789012N', label: 'IGU789012N - Igloo', type: 'IGLOO' },
-    { value: 'BOX345678N', label: 'BOX345678N - Box', type: 'BOX' },
-    { value: 'TNK901234N', label: 'TNK901234N - Tank', type: 'TANK' },
-    { value: 'REF567890N', label: 'REF567890N - Reefer', type: 'REEFER' },
+  sampleULDs: any = [
+    // { value: 'AKE33366QN', label: 'AKE Container', type: 'CONTAINER' },
+    // { value: 'PMC284710R', label: 'PMC Container', type: 'CONTAINER' },
+    // { value: 'AKH159230R', label: 'AKH Container', type: 'CONTAINER' },
+    // { value: 'LD3218470R', label: 'LD3 Container', type: 'CONTAINER' },
   ];
+
+  constructor(private readonly http: HttpClient) {}
 
   ngOnInit() {
-    this.filteredULDs = this.allULDs;
+    this.getULDTrackingNumberDetail();
   }
 
   ngAfterViewInit() {
-    this.initializeMap();
-    setTimeout(() => {
-      this.map.invalidateSize();
-    }, 100);
+    // Map will be initialized when switching to details view
   }
 
   ngOnDestroy() {
@@ -229,73 +109,192 @@ export class UldTrackingMapComponent implements OnInit {
     }
   }
 
-  private initializeMap() {
-    // Initialize map centered on world view
-    this.map = L.map(this.mapElement.nativeElement, {
-      center: [25.0, 25.0],
-      zoom: 2,
-      zoomControl: true,
-      scrollWheelZoom: true,
-      doubleClickZoom: true,
-      boxZoom: true,
-      keyboard: true,
-      dragging: true,
-      touchZoom: true,
-    });
-
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 18,
-    }).addTo(this.map);
-
-    // Set custom marker icons
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl:
-        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-      iconUrl:
-        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-      shadowUrl:
-        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    });
+  getULDTrackingNumberDetail() {
+    this.loader = true;
+    return this.http
+      .get<any>(`${this.prefixURL}/top-ulds`)
+      .pipe(
+        map((response) => response),
+        catchError((error: HttpErrorResponse) => throwError(() => error))
+      )
+      .subscribe((data) => {
+        if (data && data.length > 0) {
+          this.loader = false;
+          this.sampleULDs = data?.map((item: any) => item.ULD);
+        }
+      });
   }
 
-  onULDTypeChange() {
-    if (this.selectedULDType) {
-      this.filteredULDs = this.allULDs.filter(
-        (uld) => uld.type === this.selectedULDType
-      );
-    } else {
-      this.filteredULDs = this.allULDs;
+  trackULD() {
+    if (!this.searchULD.trim()) return;
+
+    // Immediately switch to details view
+    this.currentULD = this.searchULD.trim();
+    this.currentView = 'details';
+
+    // Set loading/default data first
+    this.currentULDType = 'Container';
+    this.currentLocation = 'Loading...';
+
+    // Initialize map immediately
+    setTimeout(() => {
+      this.initializeMap();
+    }, 50);
+
+    // Then fetch the actual data
+    this.getAllULDTrackingNumber(this.searchULD.trim());
+  }
+
+  selectSampleULD(uldNumber: string) {
+    this.searchULD = uldNumber;
+
+    // Immediately switch to details view
+    this.currentULD = uldNumber;
+    this.currentView = 'details';
+
+    // Set loading/default data first
+    this.currentULDType = 'Container';
+    this.currentLocation = 'Loading...';
+
+    // Initialize map immediately
+    setTimeout(() => {
+      this.initializeMap();
+    }, 50);
+
+    // Then fetch the actual data
+    this.getAllULDTrackingNumber(uldNumber);
+  }
+
+  getAllULDTrackingNumber(trackingId: string) {
+    this.loader = true;
+    return this.http
+      .get<any>(`${this.prefixURL}/track?uld=${trackingId}`)
+      .pipe(
+        map((response) => response),
+        catchError((error: HttpErrorResponse) => {
+          // Handle error - could show error message or fallback data
+          console.error('Error fetching ULD data:', error);
+          this.loadMockData(trackingId);
+          return throwError(() => error);
+        })
+      )
+      .subscribe((data) => {
+        if (data && data.length > 0) {
+          this.loader = false;
+          this.sampleData = data;
+          this.currentULDData = data[0];
+          this.currentULDType = data[0].ULD_TYPE || 'Container';
+          this.currentLocation = this.getCurrentLocationFromData(data[0]);
+
+          // Update map with real data
+          this.displayRouteOnMap();
+        } else {
+          // Load mock data if no real data available
+          this.loadMockData(trackingId);
+        }
+      });
+  }
+
+  private loadMockData(uldNumber: string) {
+    // Create mock data for demo purposes
+    const mockData: ULDData = {
+      MOVEMENT_DATE: new Date().toISOString().split('T')[0],
+      ULD: uldNumber,
+      CARRIER_CODE: 'QR',
+      CARRIER_NUMBER: '123',
+      ROUTE: 'DOH-LHR',
+      DEP: 'DOH',
+      ARR: 'LHR',
+      DEP_DATE: new Date().toISOString().split('T')[0],
+      ULD_TYPE: 'AKE Container',
+      LEASE: 'Y',
+      DAMAGED: 'N',
+      IDLE: 'N',
+      ACTUAL_TEMP: 4,
+      CURRENT_TEMP: 4.8,
+      BREACH_IND: 'N',
+      ALERT: 'N',
+      CRITICAL: 'N',
+      USE_IND: 'G',
+      DEP_LAT: 25.273056,
+      DEP_LON: 51.608056,
+      ARR_LAT: 51.4775,
+      ARR_LON: -0.461389,
+      BATTERY: 94,
+      SIGNAL: 89,
+    };
+
+    this.sampleData = [mockData];
+    this.currentULDData = mockData;
+    this.currentULDType = mockData.ULD_TYPE;
+    this.currentLocation = 'LHR T4';
+
+    // Update map with mock data
+    this.displayRouteOnMap();
+  }
+
+  getCurrentLocationFromData(data: ULDData): string {
+    // Mock location based on departure/arrival
+    const locations = [
+      'LHR T4',
+      'JFK Terminal 1',
+      'DXB Terminal 3',
+      'CDG Terminal 2',
+    ];
+    return locations[Math.floor(Math.random() * locations.length)];
+  }
+
+  goBack() {
+    this.currentView = 'search';
+    this.selectedSegment = null;
+    if (this.map) {
+      this.map.remove();
     }
-    this.selectedULDNumber = '';
-    this.clearMap();
   }
 
-  onULDNumberChange() {
-    if (this.selectedULDNumber) {
-      this.displayRouteOnMap();
-    } else {
-      this.clearMap();
+  private initializeMap() {
+    if (this.mapElement) {
+      this.map = L.map(this.mapElement.nativeElement, {
+        center: [25.0, 25.0],
+        zoom: 2,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        dragging: true,
+        touchZoom: true,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18,
+      }).addTo(this.map);
+
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl:
+          'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+        iconUrl:
+          'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+        shadowUrl:
+          'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      });
     }
   }
 
   private displayRouteOnMap() {
     this.clearMap();
-
-    if (!this.selectedULDNumber) return;
+    if (!this.currentULD || !this.map) return;
 
     const uldData = this.sampleData.filter(
-      (data) => data.ULD === this.selectedULDNumber
+      (data) => data.ULD === this.currentULD
     );
-
     if (uldData.length === 0) return;
 
     const segments = this.parseRouteSegments(uldData);
     this.drawRouteSegments(segments);
 
-    // Fit map to show all segments
     if (segments.length > 0) {
       const bounds = L.latLngBounds(
         segments.flatMap((s) => [s.fromCoords, s.toCoords])
@@ -306,12 +305,9 @@ export class UldTrackingMapComponent implements OnInit {
 
   private parseRouteSegments(uldData: ULDData[]): RouteSegment[] {
     const segments: RouteSegment[] = [];
-
     uldData.forEach((data) => {
-      // Use latitude and longitude directly from the data
       const fromCoords: [number, number] = [data.DEP_LAT, data.DEP_LON];
       const toCoords: [number, number] = [data.ARR_LAT, data.ARR_LON];
-
       segments.push({
         from: data.DEP,
         to: data.ARR,
@@ -321,13 +317,11 @@ export class UldTrackingMapComponent implements OnInit {
         data: data,
       });
     });
-
     return segments;
   }
 
   private drawRouteSegments(segments: RouteSegment[]) {
     segments.forEach((segment) => {
-      // Create polyline for route
       const polyline = L.polyline([segment.fromCoords, segment.toCoords], {
         color: segment.color,
         weight: 4,
@@ -335,14 +329,11 @@ export class UldTrackingMapComponent implements OnInit {
         dashArray: '10, 10',
       }).addTo(this.map);
 
-      // Add click event to polyline
       polyline.on('click', () => {
         this.selectedSegment = segment;
       });
-
       this.currentPolylines.push(polyline);
 
-      // Create markers for airports
       const fromMarker = L.circleMarker(segment.fromCoords, {
         radius: 8,
         fillColor: segment.color,
@@ -361,7 +352,6 @@ export class UldTrackingMapComponent implements OnInit {
         fillOpacity: 0.8,
       }).addTo(this.map);
 
-      // Add click events to markers
       fromMarker.on('click', () => {
         this.selectedSegment = segment;
       });
@@ -370,7 +360,6 @@ export class UldTrackingMapComponent implements OnInit {
         this.selectedSegment = segment;
       });
 
-      // Add tooltips
       fromMarker.bindTooltip(`${segment.from}`, {
         permanent: true,
         direction: 'top',
@@ -386,7 +375,6 @@ export class UldTrackingMapComponent implements OnInit {
       this.currentMarkers.push(fromMarker, toMarker);
     });
 
-    // Add custom CSS for tooltips
     this.addTooltipStyles();
   }
 
@@ -413,32 +401,51 @@ export class UldTrackingMapComponent implements OnInit {
   }
 
   private clearMap() {
-    // Remove all polylines
     this.currentPolylines.forEach((polyline) => {
       this.map.removeLayer(polyline);
     });
     this.currentPolylines = [];
 
-    // Remove all markers
     this.currentMarkers.forEach((marker) => {
       this.map.removeLayer(marker);
     });
     this.currentMarkers = [];
 
-    // Clear selected segment
     this.selectedSegment = null;
-  }
-
-  refreshMap() {
-    if (this.selectedULDNumber) {
-      this.displayRouteOnMap();
-    } else {
-      this.clearMap();
-    }
   }
 
   closeInfoPanel() {
     this.selectedSegment = null;
+  }
+
+  isTemperatureOptimal(): boolean {
+    if (!this.currentULDData) return true;
+    const diff = Math.abs(
+      this.currentULDData.CURRENT_TEMP - this.currentULDData.ACTUAL_TEMP
+    );
+    return diff <= 2; // Within 2 degrees is optimal
+  }
+
+  getSignalStrength(): string {
+    if (!this.currentULDData) return 'Unknown';
+    const signal = this.currentULDData.SIGNAL;
+    if (signal > 80) return 'Excellent';
+    if (signal > 50) return 'Good';
+    if (signal > 20) return 'Fair';
+    return 'Poor';
+  }
+
+  getSignalStatus(): string {
+    if (!this.currentULDData) return 'Unknown';
+    const signal = this.currentULDData.SIGNAL;
+    if (signal > 80) return 'Excellent';
+    if (signal > 50) return 'Good';
+    return 'Poor';
+  }
+
+  getLocationDetails(): string {
+    if (!this.currentULDData) return '';
+    return `Gate 12A • Cargo Hold • Updated 3 min ago`;
   }
 
   getTempPercentage(): number {
@@ -448,8 +455,6 @@ export class UldTrackingMapComponent implements OnInit {
     const minTemp = target - 20;
     const maxTemp = target + 20;
     const percentage = ((current - minTemp) / (maxTemp - minTemp)) * 100;
-
-    // Clamp between 0 and 100
     return Math.max(0, Math.min(100, percentage));
   }
 }
