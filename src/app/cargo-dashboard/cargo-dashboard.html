@@ -1,4 +1,4 @@
-<ion-grid class="ion-no-padding" style="width:100%">
+<ion-grid class="ion-no-padding" style="width: 100%">
   <ion-row>
     <ion-col class="ion-no-padding ion-padding-horizontal ion-padding-bottom">
       <!-- <ul>
@@ -20,13 +20,13 @@
                 </ul>
               }
           </div> -->
+          @if(forecastChartData?.length && !loader){
           <div class="chartpnl">
-            @if(forecastChartData?.length){
             <app-uld-forecast-chart
-                    [chartData]="forecastChartData"
-                    (childEvent)="handleChildData($event)"
-                  ></app-uld-forecast-chart>
-            }
+              [chartData]="forecastChartData"
+              (childEvent)="handleChildData($event)"
+            ></app-uld-forecast-chart>
+
             <!-- <div class="cargo-dashboard">
               <main class="cargo-dashboard__main">
                 <div class="dashboard-container">
@@ -34,7 +34,6 @@
                 </div>
               </main>
             </div> -->
-            
 
             <!-- <div class="cargo-dashboard">
             <main class="cargo-dashboard__main">
@@ -90,14 +89,15 @@
               </div>
             </main>
           </div> -->
-
           </div>
+          } @else{
+          <app-loader></app-loader>
+          }
         </div>
       </div>
     </ion-col>
   </ion-row>
 </ion-grid>
-
 
 <!-- <div class="cargo-dashboard" style="display:none">
   <main class="cargo-dashboard__main">
