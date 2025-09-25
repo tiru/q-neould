@@ -25,6 +25,7 @@ import { IonAlert } from "@ionic/angular/standalone";
 interface UldData {
   depDate: Date;
   uldCount: number;
+  forecastUldCount: number; // New property for forecast data
   orig: string;
   numberOfFlights: number;
   pcs: number;
@@ -60,6 +61,7 @@ export class UldForecastChartComponent implements OnInit {
   @Input() chartData: UldData[] = [];
   @ViewChild('chart') chart!: ChartComponent;
   @Output() childEvent = new EventEmitter<string>();
+  
   isAlertOpen = false;
   alertButtons = ['Close'];
   public selectedPoint: any = null;
@@ -78,6 +80,7 @@ export class UldForecastChartComponent implements OnInit {
   public customEndDate = '';
   public availableOrigins: string[] = [];
   public totalUlds = 0;
+  public totalForecastUlds = 0; // New property for forecast totals
 
   setOpen(isOpen: boolean) {
     this.isAlertOpen = isOpen;
@@ -105,7 +108,7 @@ export class UldForecastChartComponent implements OnInit {
   };
 
   public primaryYAxis: Object = {
-    title: 'ULD Count',
+    // title: 'ULD Count',
     minimum: 0,
     labelStyle: {
       size: '11px',
@@ -119,7 +122,7 @@ export class UldForecastChartComponent implements OnInit {
     minorTickLines: { width: 0 },
   };
 
-  public marker: MarkerSettingsModel = {
+  public actualMarker: MarkerSettingsModel = {
     visible: true,
     width: 8,
     height: 8,
@@ -128,10 +131,18 @@ export class UldForecastChartComponent implements OnInit {
     shape: 'Circle',
   };
 
+  public forecastMarker: MarkerSettingsModel = {
+    visible: true,
+    width: 8,
+    height: 8,
+    fill: '#A0153E',
+    border: { width: 2, color: '#ffffff' },
+    shape: 'Triangle',
+  };
+
   public tooltip: Object = {
     enable: true,
-    format:
-      '<b>${point.x}</b><br/>ULDs: <b>${point.y}</b><br/><i>Click for details</i>',
+    format: '<b>${point.x}</b><br/>${series.name}: <b>${point.y}</b><br/><i>Click for details</i>',
     textStyle: {
       size: '12px',
       color: '#ffffff',
@@ -168,7 +179,7 @@ export class UldForecastChartComponent implements OnInit {
   };
 
   public chartArea: Object = {
-    border: { width: 0 , color: "#64043C", fill: "#64043C"},
+    border: { width: 0, color: "#64043C", fill: "#64043C" },
     background: '#ffffff',
   };
 
@@ -177,7 +188,13 @@ export class UldForecastChartComponent implements OnInit {
   };
 
   public legendSettings: Object = {
-    visible: false,
+    visible: true,
+    position: 'Top',
+    textStyle: {
+      size: '12px',
+      color: '#64043C',
+      fontWeight: '600'
+    }
   };
 
   public uldTypes = [
@@ -216,7 +233,8 @@ export class UldForecastChartComponent implements OnInit {
   private updateChartDimensions(): void {
     if (this.isMobile) {
       this.chartHeight = '320px';
-      this.marker = { ...this.marker, width: 6, height: 6 };
+      this.actualMarker = { ...this.actualMarker, width: 6, height: 6 };
+      this.forecastMarker = { ...this.forecastMarker, width: 6, height: 6 };
       this.chartMargin = { left: 10, right: 10, top: 10, bottom: 10 };
     } else if (this.isTablet) {
       this.chartHeight = '380px';
@@ -227,67 +245,17 @@ export class UldForecastChartComponent implements OnInit {
     }
   }
 
-  private generateExtendedData(): UldData[] {
-    const extendedData: UldData[] = [];
-    const origins =[
-      ...new Set(this.chartData.map((item) => item.orig)),
-    ].sort();
-
-    // Generate data for August and September 2025
-    const startDate = new Date(); // August 1st
-    // Get the current date
-    const currentDate = new Date();
-    // Create a new Date object to avoid modifying the original
-    const futureDate = new Date(currentDate);
-    // Number of days to add
-    const daysToAdd = 7;
-    // Add the days
-    futureDate.setDate(futureDate.getDate() + daysToAdd);
-    const endDate = futureDate; // September 30th
-
-    for (
-      let d = new Date(startDate);
-      d <= endDate;
-      d.setDate(d.getDate() + 1)
-    ) {
-      origins.forEach((origin) => {
-        // Random chance for each origin to have data on each day
-        if (Math.random() > 0.3) {
-          const numberOfFlights = Math.floor(Math.random() * 300) + 1;
-          const baseUld = Math.floor(Math.random() * 2500) + 50;
-
-          extendedData.push({
-            depDate: new Date(d),
-            orig: origin,
-            numberOfFlights,
-            uldCount: baseUld,
-            pcs: Math.floor(Math.random() * 100000) + 1000,
-            wt: Math.floor(Math.random() * 4000000) + 10000,
-            vol: Math.floor(Math.random() * 20000) + 100,
-            pmc: Math.floor(baseUld * 0.6) + Math.floor(Math.random() * 200),
-            qke: Math.floor(baseUld * 0.2) + Math.floor(Math.random() * 100),
-            blk: Math.floor(Math.random() * 10),
-            pla: Math.floor(Math.random() * 200),
-            pkc: Math.floor(Math.random() * 20),
-            alf: Math.floor(Math.random() * 10),
-            ake: Math.floor(Math.random() * 30),
-            paj: Math.floor(Math.random() * 40),
-            rap: Math.floor(Math.random() * 20),
-          });
-        }
-      });
-    }
-
-    return extendedData.sort(
-      (a, b) => a.depDate.getTime() - b.depDate.getTime()
-    );
+  private generateForecastData(data: UldData[]): UldData[] {
+    return data.map(item => ({
+      ...item,
+      // Generate forecast data with some variance (10-20% higher/lower)
+      forecastUldCount: Math.floor(item.uldCount * (1 + Math.random() * 0.3))
+    }));
   }
 
   private processData(): void {
-    // Use extended generated data instead of limited sample
-    console.log("before" + this.chartData.length);
-    this.chartData; //= this.generateExtendedData();
-     console.log("after" + this.chartData.length);
+    // Add forecast data to existing chart data
+    this.chartData = this.generateForecastData(this.chartData);
   }
 
   private initializeFilters(): void {
@@ -295,12 +263,9 @@ export class UldForecastChartComponent implements OnInit {
     this.availableOrigins = [
       ...new Set(this.chartData.map((item) => item.orig)),
     ].sort();
-
-    console.log("iorigins" + this.availableOrigins);
-
   }
 
-  public applyFilters(dateRange? :any): void {
+  public applyFilters(dateRange?: any): void {
     let filtered = [...this.chartData];
 
     // Apply origin filter
@@ -310,6 +275,7 @@ export class UldForecastChartComponent implements OnInit {
         filtered = filtered.filter((item) => item.depDate === dateRange);
       }
     }
+    
     this.filteredData = filtered;
 
     if(this.filteredData.length == 0){
@@ -317,18 +283,15 @@ export class UldForecastChartComponent implements OnInit {
       this.processData();
     }
 
-    this.totalUlds = this.filteredData.reduce(
-      (sum, item) => sum + item.uldCount,
-      0
-    );
+    // Calculate totals for both actual and forecast
+    this.totalUlds = this.filteredData.reduce((sum, item) => sum + item.uldCount, 0);
+    this.totalForecastUlds = this.filteredData.reduce((sum, item) => sum + item.forecastUldCount, 0);
 
     let filterForDate = filtered;
     filterForDate.forEach((dateFilter) => {
       let dateText = dateFilter.depDate.toLocaleString('default', { month: 'short', day: 'numeric' });
       this.dateForFilter.push(dateText);
     });
-
-    console.log("dateReange select" + this.dateForFilter);
 
     // Update chart axis based on filtered data
     this.updateChartAxis();

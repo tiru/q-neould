@@ -1,25 +1,6 @@
  <div class="chart-container" [class.mobile]="isMobile" [class.tablet]="isTablet">
       <div class="header">
         <div class="filters-section">
-          <!-- <div class="filter-group">
-            <label>Date Range:</label>
-            <select [(ngModel)]="selectedDateRange" (change)="applyFilters()">
-              <option value="all">All Data</option>
-              <option value="august">August 2025</option>
-              <option value="september">September 2025</option>
-              <option value="last30">Last 30 Days</option>
-              <option value="last7">Last 7 Days</option>
-              <option value="custom">Custom Range</option>
-            </select>
-          </div> 
-          
-          <div class="filter-group" *ngIf="selectedDateRange === 'custom'">
-            <label>From:</label>
-            <input type="date" [(ngModel)]="customStartDate" (change)="applyFilters()">
-            <label>To:</label>
-            <input type="date" [(ngModel)]="customEndDate" (change)="applyFilters()">
-          </div>-->
-          
           <div class="filter-group">
             <label>Airport:</label>
             <select [(ngModel)]="selectedOrigin" (change)="applyFilters()">
@@ -27,15 +8,11 @@
             </select>
           </div>
           
-          <div class="stats-summary">
-             <span class="stat">{{totalUlds}} Total ULDs</span>
-          </div>
+          <!-- <div class="stats-summary">
+             <span class="stat actual-stat">{{totalUlds}} Total ULDs</span>
+             <span class="stat forecast-stat">{{totalForecastUlds}} Forecast ULDs</span>
+          </div> -->
         </div>
-        
-        <!-- <div class="time-indicator">
-          <span class="clock-icon">📊</span>
-          <span class="time-text">{{ getDateRange() }}</span>
-        </div> -->
         
         <div class="chart-info" *ngIf="!isMobile">
           <span class="info-text">Click points for ULD breakdown • Scroll to zoom</span>
@@ -64,10 +41,21 @@
               type="Line" 
               xName="depDate" 
               yName="uldCount"
-              name="ULD Count"
-              [marker]="marker"
+              name="Actual ULD Count"
+              [marker]="actualMarker"
               width="3"
               fill="#64043C"
+              [animation]="animation">
+            </e-series>
+            <e-series 
+              [dataSource]="filteredData" 
+              type="Line" 
+              xName="depDate" 
+              yName="forecastUldCount"
+              name="Forecast ULD Count"
+              [marker]="forecastMarker"
+              width="3"
+              fill="#008000"
               [animation]="animation">
             </e-series>
           </e-series-collection>
@@ -97,8 +85,12 @@
                 <span class="value">{{ selectedPoint.numberOfFlight }}</span>
               </div>
               <div class="summary-item">
-                <span class="label">Total ULDs:</span>
-                <span class="value highlight">{{ selectedPoint.uldCount }}</span>
+                <span class="label">Actual ULDs:</span>
+                <span class="value highlight actual">{{ selectedPoint.uldCount }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Forecast ULDs:</span>
+                <span class="value highlight forecast">{{ selectedPoint.forecastUldCount }}</span>
               </div>
               <div class="summary-item">
                 <span class="label">Date/Time:</span>
