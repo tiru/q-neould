@@ -14,7 +14,13 @@ interface Message {
   text: string;
   type: 'user' | 'system';
   timestamp: Date;
-  htmlContent?: SafeHtml; // Added htmlContent property to store HTML per message
+  htmlContent?: SafeHtml;
+}
+
+interface Chip {
+  id: string;
+  text: string;
+  visible: boolean;
 }
 
 @Component({
@@ -31,16 +37,48 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
   isTyping = false;
   isFullscreen = false;
 
+  // Predefined suggestion chips - always visible
+  chips: Chip[] = [
+    {
+      id: '1',
+      text: 'Show me real-time status of all Qatar Airways ULDs currently at LHR',
+      visible: true,
+    },
+    {
+      id: '2',
+      text: 'Show me real-time status of all Qatar Airways ULDs currently at DOH',
+      visible: true,
+    },
+    {
+      id: '3',
+      text: 'Show me real-time status of all Qatar Airways ULDs currently at SYD',
+      visible: true,
+    },
+    // {
+    //   id: '4',
+    //   text: 'Show me Qatar Airways cargo capacity information',
+    //   visible: true,
+    // },
+    // {
+    //   id: '5',
+    //   text: 'What destinations does Qatar Airways serve?',
+    //   visible: true,
+    // },
+    // {
+    //   id: '6',
+    //   text: 'Tell me about Qatar Airways fleet information',
+    //   visible: true,
+    // },
+  ];
+
   private destroy$ = new Subject<void>();
   private apiUrl =
     'https://qneo-openai-eegqg5bah4gqgzg2.canadacentral-01.azurewebsites.net/callAzureOpenAIRestAPI';
 
-  // Removed the global htmlContent property as it's now per-message
-  
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-     this.isOpen = true;
+    this.isOpen = true;
     this.addSystemMessage(
       'Hello! How can I help you today? Ask me for a quote or any question!'
     );
@@ -55,12 +93,19 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
     this.isOpen = !this.isOpen;
   }
 
-  sendMessage(): void {
-    if (!this.newMessage.trim()) return;
-    this.addUserMessage(this.newMessage);
-    const userMessage = this.newMessage;
+  sendMessage(message?: string): void {
+    const messageToSend = message || this.newMessage.trim();
+    if (!messageToSend) return;
+
+    this.addUserMessage(messageToSend);
     this.newMessage = '';
-    this.postAPIResponse(userMessage);
+    // Chips remain visible - no hiding logic
+    this.postAPIResponse(messageToSend);
+  }
+
+  // Handle chip click
+  onChipClick(chip: Chip): void {
+    this.sendMessage(chip.text);
   }
 
   private addUserMessage(text: string): void {
@@ -74,14 +119,13 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
   }
 
-  // Modified to accept optional htmlContent parameter
   private addSystemMessage(text: string, htmlContent?: SafeHtml): void {
     const message: Message = {
       id: this.generateId(),
       text,
       type: 'system',
       timestamp: new Date(),
-      htmlContent: htmlContent, // Store HTML content in the individual message
+      htmlContent: htmlContent,
     };
     this.messages.push(message);
     this.scrollToBottom();
@@ -96,21 +140,19 @@ export class ChatBubbleComponent implements OnInit, OnDestroy {
         { msg: userMessage },
         {
           headers: headers,
-          responseType: 'text' as 'json', // The cast keeps TypeScript happy
+          responseType: 'text' as 'json',
         }
       )
       .subscribe({
         next: (response) => {
           this.isTyping = false;
-          
-          // FIXED: Proper handling of HTML vs text responses
+
           if (response.includes('<div')) {
-            // For HTML responses: sanitize HTML and pass it as htmlContent
-            const sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(response);
-            this.addSystemMessage('', sanitizedHtml); // Empty text, HTML content
+            const sanitizedHtml =
+              this.sanitizer.bypassSecurityTrustHtml(response);
+            this.addSystemMessage('', sanitizedHtml);
           } else {
-            // For plain text responses: just pass the text
-            this.addSystemMessage(response); // Text only, no HTML content
+            this.addSystemMessage(response);
           }
         },
         error: (error) => {

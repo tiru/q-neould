@@ -1,8 +1,15 @@
 .chat-bubble {
-  bottom: 125px;
-  right: 20px;
-  z-index: 1000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column
 }
 
 .chat-bubble__button {
@@ -54,32 +61,26 @@
 }
 
 .chat-bubble__window {
-  position: absolute;
-  bottom: 80px;
-  right: 0;
-  width: 350px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
   display: flex;
   flex-direction: column;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(20px) scale(.95);
+  transform: scale(.95);
   transition: all .3s cubic-bezier(.68, -.55, .265, 1.55)
 }
 
 .chat-bubble__window--open {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0) scale(1);
+  transform: scale(1);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
-  max-height: calc(100vh - 200px);
+  height: 100vh;
+  max-height: calc(100vh - 150px);
 }
-
 
 .chat-bubble__window--fullscreen {
   position: fixed !important;
@@ -90,7 +91,7 @@
   width: 100vw !important;
   height: 100vh !important;
   border-radius: 0 !important;
-  z-index: 9999 !important;
+  z-index: 99999 !important;
   transform: translateY(0) scale(1) !important
 }
 
@@ -162,11 +163,12 @@
 
 .chat-bubble__messages {
   flex: 1;
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px
+  gap: 16px;
+  min-height: 0
 }
 
 .chat-bubble__messages::-webkit-scrollbar {
@@ -288,12 +290,71 @@
   animation-delay: .4s
 }
 
+.chat-bubble__chips {
+  margin: 16px 0;
+  animation: messageSlideIn .3s ease-out
+}
+
+.chat-bubble__chips-fixed {
+  padding: 16px 20px 8px 20px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  position: relative;
+  z-index: 1001
+}
+
+.chat-bubble__chips-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 8px;
+  font-weight: 500
+}
+
+.chat-bubble__chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px
+}
+
+.chat-bubble__chip {
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .2s ease;
+  white-space: nowrap;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-family: inherit;
+  line-height: 1.2
+}
+
+.chat-bubble__chip:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
+}
+
+.chat-bubble__chip:active {
+  transform: translateY(0);
+  background: #cbd5e1
+}
+
 .chat-bubble__input-container {
-  padding: 20px;
+  padding: 8px 20px 20px 20px;
   border-top: 1px solid #e2e8f0;
   display: flex;
   gap: 12px;
-  align-items: flex-end
+  align-items: flex-end;
+  background: #fff;
+  position: relative;
+  z-index: 1002;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, .05);
+  padding-bottom: calc(20px + env(safe-area-inset-bottom))
 }
 
 .chat-bubble__input {
@@ -310,6 +371,8 @@
   max-height: 100px;
   background-color: #fff;
   color: #333;
+  position: relative;
+  z-index: 1002
 }
 
 .chat-bubble__input:focus {
@@ -365,8 +428,7 @@
 
 @media (max-width:768px) {
   .chat-bubble {
-    bottom: 120px;
-    right: 15px
+    z-index: 10001
   }
 
   .chat-bubble__button {
@@ -380,30 +442,41 @@
   }
 
   .chat-bubble__window {
-    width: calc(100vw - 30px);
-    height: calc(100vh - 150px);
-    bottom: 70px;
-    right: -15px;
-    max-width: 350px;
-    max-height: 500px
+    z-index: 10002
   }
 
   .chat-bubble__window--fullscreen {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-width: none !important;
-    max-height: none !important;
-    right: 0 !important;
-    bottom: 0 !important
+    z-index: 99999 !important
+  }
+
+  .chat-bubble__chip {
+    font-size: 11px;
+    padding: 6px 12px
+  }
+
+  .chat-bubble__chips-fixed {
+    padding: 12px 15px 6px 15px;
+    z-index: 10003
+  }
+
+  .chat-bubble__input-container {
+    z-index: 10004;
+    padding: 6px 15px 15px 15px;
+    padding-bottom: calc(15px + env(safe-area-inset-bottom))
+  }
+
+  .chat-bubble__input {
+    z-index: 10005
   }
 }
 
 @media (max-width:480px) {
+  .chat-bubble {
+    z-index: 10006
+  }
+
   .chat-bubble__window {
-    width: calc(100vw - 20px);
-    height: calc(100vh - 120px);
-    bottom: 70px;
-    right: -10px
+    z-index: 10007
   }
 
   .chat-bubble__header {
@@ -415,11 +488,28 @@
   }
 
   .chat-bubble__messages {
-    padding: 15px
+    padding: 15px 15px 0 15px
+  }
+
+  .chat-bubble__chips-fixed {
+    padding: 10px 15px 4px 15px;
+    z-index: 10008
   }
 
   .chat-bubble__input-container {
-    padding: 15px
+    padding: 4px 15px 15px 15px;
+    z-index: 10009;
+    padding-bottom: calc(15px + env(safe-area-inset-bottom))
+  }
+
+  .chat-bubble__chip {
+    font-size: 10px;
+    padding: 6px 10px;
+    max-width: 100%;
+  }
+
+  .chat-bubble__input {
+    z-index: 10010
   }
 }
 
@@ -466,28 +556,27 @@
   border-radius: 12px;
   max-width: 420px;
   width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+  text-align: center
 }
 
 h1 {
   font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-  color: #333;
+  margin-bottom: .5rem;
+  color: #333
 }
 
 .updated {
-  font-size: 0.85rem;
+  font-size: .85rem;
   color: #777;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.2rem
 }
 
-/* Stats layout */
 .stats {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-around;
+  justify-content: space-around
 }
 
 .stat {
@@ -495,45 +584,39 @@ h1 {
   background: #f0f0f0;
   border-radius: 8px;
   padding: 1rem;
-  text-align: center;
+  text-align: center
 }
 
 .stat .label {
   display: block;
   font-weight: bold;
-  margin-bottom: 0.4rem;
-  color: #555;
+  margin-bottom: .4rem;
+  color: #555
 }
 
 .stat .value {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 700
 }
 
-/* Colors */
 .total .value {
-  color: #000;
+  color: #000
 }
 
 .available .value {
-  color: #2ecc71;
+  color: #2ecc71
 }
 
-/* green */
 .inuse .value {
-  color: #3498db;
+  color: #3498db
 }
 
-/* blue */
 .maintenance .value {
-  color: #e74c3c;
+  color: #e74c3c
 }
 
-/* red */
-
-/* Responsive tweaks */
-@media (max-width: 480px) {
+@media (max-width:480px) {
   .stat {
-    flex: 1 1 100%;
+    flex: 1 1 100%
   }
 }

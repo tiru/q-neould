@@ -5,6 +5,7 @@ ion-tab-bar {
   --color-selected: var(--primary-color); /* active tab color */
   --border: 1px solid #fff;      /* top border of tab bar */
   padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom:2rem;
 }
 
 
